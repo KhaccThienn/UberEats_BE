@@ -1,3 +1,4 @@
+import { OrderDeatailsEntity } from 'src/order_details/entity/order_details.entity';
 import { ProductEntity } from 'src/product/entity/product.entity';
 import { User } from 'src/user/entity/user.entity';
 import { VoucherEntity } from 'src/voucher/entity/voucher.entity';
@@ -45,4 +46,7 @@ export class RestaurantEntity {
 
   @OneToMany(() => VoucherEntity, (voucher) => voucher.restaurant)
   vouchers: VoucherEntity[];
+
+  @OneToMany(() => OrderDeatailsEntity, (order_detail) => order_detail.restaurants)
+  order_details: OrderDeatailsEntity[];
 }
