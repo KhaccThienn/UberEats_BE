@@ -12,7 +12,7 @@ export class RegisterDTO {
   @IsNotEmpty()
   @IsString()
   @Expose()
-  username: string;
+  userName: string;
 
   @IsNotEmpty()
   @IsString()
@@ -34,7 +34,7 @@ export class RegisterDTO {
 
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber()
+  @IsPhoneNumber('VN', { message: 'Invalid phone number' })
   @Expose()
   phone: string;
 

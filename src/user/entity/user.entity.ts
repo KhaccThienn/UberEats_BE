@@ -16,7 +16,7 @@ export class User {
     length: 100,
     nullable: false,
   })
-  username: string;
+  userName: string;
 
   @Column({
     type: 'text',
