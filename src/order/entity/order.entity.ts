@@ -20,7 +20,8 @@ export class OrderEntity {
   delivered_address: string;
 
   @Column({
-    type: 'tinyint',
+    type: 'varchar',
+    length: 20,
     nullable: false,
   })
   delivered_phone: number;

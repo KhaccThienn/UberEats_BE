@@ -15,6 +15,10 @@ export class ProductService {
         @InjectRepository(RestaurantEntity)
         private readonly restaurantRepository: Repository<RestaurantEntity>
     ){}
+    
+    async queryBuilder(query: string) {
+        return await this.productRepository.createQueryBuilder(query);
+    }
 
     async getAll(): Promise<ProductEntity[]>{
         return await this.productRepository.find();
