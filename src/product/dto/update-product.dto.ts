@@ -1,4 +1,8 @@
+import { IsNotEmpty, MinLength } from "class-validator";
+
 export class UpdateProductDTO {
+    @IsNotEmpty()
+    @MinLength(3)
     name:string;
 
     image: string;
@@ -7,6 +11,7 @@ export class UpdateProductDTO {
 
     sale_price: number;
 
+    @IsNotEmpty()
     status: number;
     
     description: string;

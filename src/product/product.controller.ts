@@ -52,7 +52,7 @@ export class ProductController {
 
     // paginate
     const page: number = parseInt(req.query.page as any) || 1;
-    const perpage: number = parseInt(req.query.limit as any) || 4;
+    const perpage: number = parseInt(req.query.limit as any) || 9;
 
     builder.offset((page - 1) * perpage).limit(perpage);
 
