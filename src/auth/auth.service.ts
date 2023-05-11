@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,6 +23,7 @@ export class AuthService {
     private jwtService: JwtService,
     private cfgService: ConfigService,
   ) {}
+  private logger = new Logger();
 
   async hashPassword(password: string): Promise<string> {
     return await argon.hash(password);
@@ -38,15 +40,15 @@ export class AuthService {
   }
 
   async registerAccount(user: RegisterDTO): Promise<User> {
-    const exists_user = this.doesUserExist(user.email);
+    const exists_user = await this.doesUserExist(user.email);
     if (exists_user) {
-      throw new ForbiddenException(`User ${user.username} already exists`);
+      throw new ForbiddenException(`User ${user.userName} already exists`);
     }
     const hashedPassword = await this.hashPassword(user.password);
     user.password = hashedPassword;
 
     return this.userRepo.save({
-      username: user.username,
+      userName: user.userName,
       email: user.email,
       password: user.password,
       role: user.role,
@@ -60,18 +62,18 @@ export class AuthService {
           email: email,
         },
       ],
-      select: ['id', 'username', 'password', 'role'],
+      select: ['id', 'userName', 'password', 'role'],
     });
     if (!user) {
       throw new HttpException(
-        { status: HttpStatus.FORBIDDEN, error: 'Invalid Credentials' },
+        { status: HttpStatus.FORBIDDEN, error: 'Invalid Account' },
         HttpStatus.FORBIDDEN,
       );
     }
-    const matchPass = await argon.verify(password, user.password);
+    const matchPass = await argon.verify(user.password, password);
     if (!matchPass) {
       throw new HttpException(
-        { status: HttpStatus.FORBIDDEN, error: 'Pass does not match' },
+        { status: HttpStatus.FORBIDDEN, error: 'Invalid Account' },
         HttpStatus.FORBIDDEN,
       );
     }
@@ -87,15 +89,15 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     }
-    return await this.signJwtToken(userFound.username, userFound.role);
+    return await this.signJwtToken(userFound.userName, userFound.role);
   }
 
   async signJwtToken(
-    username: string,
+    userName: string,
     role: number,
   ): Promise<{ accessToken: string }> {
     const payload = {
-      subject: username,
+      subject: userName,
       role,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
