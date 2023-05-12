@@ -1,12 +1,12 @@
-import { 
-  Body, 
-  Controller, 
-  Delete, 
-  Get, 
-  Param, 
-  Post, 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
   Put,
-  Req
+  Req,
 } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantDTO } from './dto/create-restaurant.dto';
@@ -20,13 +20,11 @@ export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @Get()
-  async getAll(@Req() req:Request): Promise<RestaurantEntity[]>{
-    const builder = (
-      await this.restaurantService.queryBuilder('restaurant')
-    );
+  async getAll(@Req() req: Request): Promise<RestaurantEntity[]> {
+    const builder = await this.restaurantService.queryBuilder('restaurant');
 
     // search
-    if ( req.query.keyWord){
+    if (req.query.keyWord) {
       builder.andWhere(`restaurant.name LIKE '%${req.query.keyWord}%'`);
     }
 
@@ -40,22 +38,25 @@ export class RestaurantController {
   }
 
   @Get(':id')
-  async getByID(@Param('id') id: number): Promise<RestaurantEntity[]>{
+  async getByID(@Param('id') id: number): Promise<RestaurantEntity[]> {
     return await this.restaurantService.getByID(id);
   }
 
   @Post()
-  async create(@Body() data: CreateRestaurantDTO): Promise<RestaurantEntity>{
+  async create(@Body() data: CreateRestaurantDTO): Promise<RestaurantEntity> {
     return await this.restaurantService.create(data);
   }
 
   @Put(':id')
-  async update(@Param('id') id:number, @Body() data:UpdateRestaurantDTO): Promise<UpdateResult>{
-    return await this.restaurantService.update(id,data);
+  async update(
+    @Param('id') id: number,
+    @Body() data: UpdateRestaurantDTO,
+  ): Promise<UpdateResult> {
+    return await this.restaurantService.update(id, data);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id:number): Promise<DeleteResult>{
+  async delete(@Param('id') id: number): Promise<DeleteResult> {
     return await this.restaurantService.delete(id);
   }
 }
