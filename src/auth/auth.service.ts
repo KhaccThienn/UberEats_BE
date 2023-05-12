@@ -62,7 +62,7 @@ export class AuthService {
           email: email,
         },
       ],
-      select: ['id', 'userName', 'password', 'role'],
+      select: ['id', 'username', 'password', 'role'],
     });
     if (!user) {
       throw new HttpException(
@@ -89,7 +89,7 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     }
-    return await this.signJwtToken(userFound.userName, userFound.role);
+    return await this.signJwtToken(userFound.username, userFound.role);
   }
 
   async signJwtToken(
