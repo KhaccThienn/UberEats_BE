@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from 'src/product/product.module';
 import { RestaurantEntity } from './entity/restaurant.entity';
 import { OrderDetailsModule } from 'src/order_details/order_details.module';
+import { VoucherModule } from 'src/voucher/voucher.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([RestaurantEntity]),
     forwardRef(()=>ProductModule),
-    forwardRef(()=> OrderDetailsModule)
+    forwardRef(()=> OrderDetailsModule),
+    forwardRef(()=> VoucherModule)
   ],
   controllers: [RestaurantController],
   providers: [RestaurantService],
