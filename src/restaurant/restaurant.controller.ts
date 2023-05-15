@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+
 import {
   Body,
   Controller,
@@ -33,6 +34,7 @@ export class RestaurantController {
       await this.restaurantService.queryBuilder('restaurant')
     ).leftJoinAndSelect('restaurant.products', 'product');
 
+
     // search
     if (req.query.keyWord) {
       builder.andWhere(`restaurant.name LIKE '%${req.query.keyWord}%'`);
@@ -48,6 +50,7 @@ export class RestaurantController {
   }
 
   @Get(':id')
+
   async getByID(@Param('id') id: number): Promise<RestaurantEntity> {
     return await this.restaurantService.getByID(id);
   }
@@ -112,6 +115,7 @@ export class RestaurantController {
     }
     data.avatar = fileName;
     return await this.restaurantService.update(user_id, id, data);
+
   }
 
   @Delete(':id')
