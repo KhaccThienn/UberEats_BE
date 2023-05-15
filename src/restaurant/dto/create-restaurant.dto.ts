@@ -13,6 +13,8 @@ export class CreateRestaurantDTO {
     @Expose()
     address: string;
 
+    avatar: string;
+  
     @IsNotEmpty()
     @IsString()
     @IsEmail()
