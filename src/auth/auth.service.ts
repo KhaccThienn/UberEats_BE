@@ -44,13 +44,13 @@ export class AuthService {
   async registerAccount(user: RegisterDTO): Promise<User> {
     const exists_user = await this.doesUserExist(user.email);
     if (exists_user) {
-      throw new ForbiddenException(`User ${user.userName} already exists`);
+      throw new ForbiddenException(`User ${user.username} already exists`);
     }
     const hashedPassword = await this.hashedData(user.password);
     user.password = hashedPassword;
 
     return this.userRepo.save({
-      userName: user.userName,
+      username: user.username,
       email: user.email,
       password: user.password,
       role: user.role,

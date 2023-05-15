@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module, forwardRef } from '@nestjs/common';
 import { OrderDetailsService } from './order_details.service';
 import { OrderDetailsController } from './order_details.controller';
@@ -10,12 +11,11 @@ import { ProductModule } from 'src/product/product.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([OrderDeatailsEntity]),
-    forwardRef(()=> RestaurantModule),
-    forwardRef(()=> OrderModule),
-    forwardRef(()=> ProductModule)
+    forwardRef(() => OrderModule),
+    forwardRef(() => ProductModule),
   ],
   controllers: [OrderDetailsController],
   providers: [OrderDetailsService],
-  exports: [TypeOrmModule]
+  exports: [TypeOrmModule],
 })
 export class OrderDetailsModule {}

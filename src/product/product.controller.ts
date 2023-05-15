@@ -61,8 +61,13 @@ export class ProductController {
     return builder.getMany();
   }
 
-  @Get(':id')
-  async getByID(@Param('id') id: number): Promise<ProductEntity[]> {
+  @Get(':id-:slugs')
+  async getByID(
+    @Param('id') id: number,
+    @Param('slugs') slugs: string,
+  ): Promise<ProductEntity[]> {
+    console.log(slugs);
+
     return await this.productService.getByID(id);
   }
 
