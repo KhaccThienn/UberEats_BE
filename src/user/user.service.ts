@@ -24,7 +24,7 @@ export class UserService {
 
   async findByUsername(username: string): Promise<User> {
     return this.userRepo.findOne({
-      where: [{ username: username }],
+      where: [{ userName: username }],
     });
   }
 
