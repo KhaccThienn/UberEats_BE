@@ -7,32 +7,35 @@ import { UpdateRestaurantDTO } from './dto/update-restaurant.dto';
 
 @Injectable()
 export class RestaurantService {
-    constructor(
-        @InjectRepository(RestaurantEntity)
-    private readonly restaurantRepository: Repository<RestaurantEntity>
-    ){}
+  constructor(
+    @InjectRepository(RestaurantEntity)
+    private readonly restaurantRepository: Repository<RestaurantEntity>,
+  ) {}
 
-    async queryBuilder(query: string){
-        return await this.restaurantRepository.createQueryBuilder(query);
-    }
+  async queryBuilder(query: string) {
+    return await this.restaurantRepository.createQueryBuilder(query);
+  }
 
-    async getAll(): Promise<RestaurantEntity[]>{
-        return await this.restaurantRepository.find();
-    } 
+  async getAll(): Promise<RestaurantEntity[]> {
+    return await this.restaurantRepository.find();
+  }
 
-    async getByID(id: number): Promise<RestaurantEntity[]>{
-        return await this.restaurantRepository.findBy({id});
-    }
+  async getByID(id: number): Promise<RestaurantEntity[]> {
+    return await this.restaurantRepository.findBy({ id });
+  }
 
-    async create(newRestaurant: CreateRestaurantDTO): Promise<RestaurantEntity>{
-        return await this.restaurantRepository.save(newRestaurant);
-    }
+  async create(newRestaurant: CreateRestaurantDTO): Promise<RestaurantEntity> {
+    return await this.restaurantRepository.save(newRestaurant);
+  }
 
-    async update(id:number, category: UpdateRestaurantDTO): Promise<UpdateResult>{
-        return await this.restaurantRepository.update(id,category);
-    }
+  async update(
+    id: number,
+    restaurant: UpdateRestaurantDTO,
+  ): Promise<UpdateResult> {
+    return await this.restaurantRepository.update(id, restaurant);
+  }
 
-    async delete(id:number): Promise<DeleteResult>{
-        return await this.restaurantRepository.delete(id);
-    }
+  async delete(id: number): Promise<DeleteResult> {
+    return await this.restaurantRepository.delete(id);
+  }
 }
