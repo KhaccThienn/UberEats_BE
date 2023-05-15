@@ -30,10 +30,9 @@ export class RestaurantController {
 
   @Get()
   async getAll(@Req() req: Request): Promise<RestaurantEntity[]> {
-    const builder = (
-      await this.restaurantService.queryBuilder('restaurant')
-    ).leftJoinAndSelect('restaurant.products', 'product');
-
+    const builder = (await this.restaurantService.queryBuilder('restaurant'))
+      .leftJoinAndSelect('restaurant.products', 'product')
+      .leftJoinAndSelect('restaurant.vouchers', 'voucher');
 
     // search
     if (req.query.keyWord) {
@@ -49,9 +48,13 @@ export class RestaurantController {
     return builder.getMany();
   }
 
-  @Get(':id')
-
-  async getByID(@Param('id') id: number): Promise<RestaurantEntity> {
+  @Get(':id-:slugs')
+  async getByID(
+    @Param('id') id: number,
+    @Param('slugs') slugs: string,
+  ): Promise<RestaurantEntity> {
+    console.log(slugs);
+    
     return await this.restaurantService.getByID(id);
   }
 
@@ -115,7 +118,6 @@ export class RestaurantController {
     }
     data.avatar = fileName;
     return await this.restaurantService.update(user_id, id, data);
-
   }
 
   @Delete(':id')

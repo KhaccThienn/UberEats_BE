@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { OrderDeatailsEntity } from 'src/order_details/entity/order_details.entity';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
 import { User } from 'src/user/entity/user.entity';

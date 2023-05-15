@@ -54,7 +54,4 @@ export class RestaurantEntity {
 
   @OneToMany(() => VoucherEntity, (voucher) => voucher.restaurant)
   vouchers: VoucherEntity[];
-
-  @OneToMany(() => OrderDeatailsEntity, (order_detail) => order_detail.restaurants)
-  order_details: OrderDeatailsEntity[];
 }

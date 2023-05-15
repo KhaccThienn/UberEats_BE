@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderEntity } from './entity/order.entity';
 import { CreateOrderDTO } from './dto/create-order.dto';
@@ -15,22 +24,29 @@ export class OrderController {
   }
 
   @Get(':id')
-  async getByID(@Param('id') id: number):Promise<OrderEntity[]>{
+  async getByID(@Param('id') id: number): Promise<OrderEntity[]> {
     return await this.orderService.getByID(id);
   }
 
-  @Post()
-  async create(@Body() data: CreateOrderDTO): Promise<OrderEntity>{
-    return await this.orderService.create(data);
+  @Post(':userID')
+  async create(
+    @Param('userID') userID: number,
+    @Body() data: CreateOrderDTO,
+  ): Promise<OrderEntity> {
+    return await this.orderService.create(userID, data);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: number, @Body() data:UpdateOrderDTO): Promise<UpdateResult>{
-    return await this.orderService.update(id,data);
+  @Put(':id/:userID')
+  async update(
+    @Param('userID') userID: number,
+    @Param('id') id: number,
+    @Body() data: UpdateOrderDTO,
+  ): Promise<UpdateResult> {
+    return await this.orderService.update(userID, id, data);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id:number):Promise<DeleteResult>{
+  async delete(@Param('id') id: number): Promise<DeleteResult> {
     return await this.orderService.delete(id);
   }
 }
