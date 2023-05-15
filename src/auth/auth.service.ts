@@ -64,7 +64,7 @@ export class AuthService {
           email: email,
         },
       ],
-      select: ['id', 'username', 'password', 'role'],
+      select: ['id', 'userName', 'password', 'role'],
     });
     if (!user) {
       throw new HttpException(
