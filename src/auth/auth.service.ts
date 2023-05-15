@@ -10,10 +10,11 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entity/user.entity';
 import * as argon from 'argon2';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { RegisterDTO } from './DTOS/register.dto';
 import { LoginDTO } from './DTOS/login.dto';
 import { ConfigService } from '@nestjs/config';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -22,10 +23,11 @@ export class AuthService {
     private readonly userRepo: Repository<User>,
     private jwtService: JwtService,
     private cfgService: ConfigService,
+    private userService: UserService,
   ) {}
   private logger = new Logger();
 
-  async hashPassword(password: string): Promise<string> {
+  async hashedData(password: string): Promise<string> {
     return await argon.hash(password);
   }
 
@@ -44,7 +46,7 @@ export class AuthService {
     if (exists_user) {
       throw new ForbiddenException(`User ${user.userName} already exists`);
     }
-    const hashedPassword = await this.hashPassword(user.password);
+    const hashedPassword = await this.hashedData(user.password);
     user.password = hashedPassword;
 
     return this.userRepo.save({
@@ -81,7 +83,10 @@ export class AuthService {
     return user;
   }
 
-  async login(user: LoginDTO): Promise<{ accessToken: string }> {
+  async login(user: LoginDTO): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }> {
     const userFound = await this.validateUser(user.email, user.password);
     if (!userFound) {
       throw new HttpException(
@@ -89,24 +94,76 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     }
-    return await this.signJwtToken(userFound.userName, userFound.role);
+    const tokens = await this.signJwtToken(userFound.id, userFound.role);
+    await this.updateRefreshToken(userFound.id.toString(), tokens.refreshToken);
+    return tokens;
+
   }
 
+  async updateRefreshToken(userId: string, refreshToken: string) {
+    const hashedRefreshToken = await this.hashedData(refreshToken);
+    await this.userService.update(userId, {
+      refresh_token: hashedRefreshToken,
+    });
+  }
+
+  async logOut(userId: string): Promise<UpdateResult> {
+    return this.userService.update(userId, {
+      refresh_token: null,
+    });
+  }
+
+  async refreshTokens(userID: string, refreshToken: string) {
+    const user = await this.userService.findById(userID);
+    console.log('Rf Token: ', refreshToken);
+    console.log('User RF token: ', user.refresh_token);
+
+    if (!user || !user.refresh_token) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    const rfTokenVerified = await argon.verify(
+      user.refresh_token,
+      refreshToken,
+    );
+
+    if (!rfTokenVerified) {
+      throw new ForbiddenException('Access denied - RF Token Does Not Match');
+    }
+
+    const tokens = await this.signJwtToken(user.id, user.role);
+
+    // update field refresh token trong database
+    await this.updateRefreshToken(user.id.toString(), tokens.refreshToken);
+
+    return tokens;
+  }
   async signJwtToken(
-    userName: string,
+    id: number,
+
     role: number,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }> {
     const payload = {
-      subject: userName,
+      subject: id,
       role,
     };
-    const accessToken = await this.jwtService.signAsync(payload, {
-      expiresIn: '10m',
-      secret: this.cfgService.get('SECRET_TOKEN_KEY'),
-    });
 
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        secret: process.env.SECRET_TOKEN_KEY,
+        expiresIn: '15m',
+      }),
+      this.jwtService.signAsync(payload, {
+        secret: process.env.SECRET_REFRESH_TOKEN_KEY,
+        expiresIn: '7d',
+      }),
+    ]);
     return {
-      accessToken: accessToken,
+      accessToken,
+      refreshToken,
     };
   }
 }
