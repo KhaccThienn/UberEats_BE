@@ -36,7 +36,7 @@ export class User {
     length: 20,
     nullable: false,
   })
-  phone: number;
+  phone: string;
 
   @Column({
     type: 'varchar',
@@ -55,6 +55,12 @@ export class User {
     default: Role.CLIENT,
   })
   role: number;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+  })
+  refresh_token: string;
 
   @OneToMany(() => RestaurantEntity, (restaurant) => restaurant.user)
   restaurant: RestaurantEntity[];
