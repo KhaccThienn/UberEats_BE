@@ -1,12 +1,17 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseFilePipe,
   Post,
   Put,
   Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantDTO } from './dto/create-restaurant.dto';
@@ -14,6 +19,9 @@ import { RestaurantEntity } from './entity/restaurant.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { UpdateRestaurantDTO } from './dto/update-restaurant.dto';
 import { Request } from 'express';
+import { AccessTokenGuard } from 'src/auth/guards';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @Controller('restaurant')
 export class RestaurantController {
@@ -21,7 +29,9 @@ export class RestaurantController {
 
   @Get()
   async getAll(@Req() req: Request): Promise<RestaurantEntity[]> {
-    const builder = await this.restaurantService.queryBuilder('restaurant');
+    const builder = (
+      await this.restaurantService.queryBuilder('restaurant')
+    ).leftJoinAndSelect('restaurant.products', 'product');
 
     // search
     if (req.query.keyWord) {
@@ -38,21 +48,70 @@ export class RestaurantController {
   }
 
   @Get(':id')
-  async getByID(@Param('id') id: number): Promise<RestaurantEntity[]> {
+  async getByID(@Param('id') id: number): Promise<RestaurantEntity> {
     return await this.restaurantService.getByID(id);
   }
 
-  @Post()
-  async create(@Body() data: CreateRestaurantDTO): Promise<RestaurantEntity> {
-    return await this.restaurantService.create(data);
+  @Post(':id')
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: './src/public/uploads',
+        filename(req, file, callback) {
+          let filename = Date.now() + file.originalname;
+          filename = filename.split(' ').join('_');
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
+  async create(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: true,
+      }),
+    )
+    image: Express.Multer.File,
+    @Body() data: CreateRestaurantDTO,
+  ): Promise<RestaurantEntity> {
+    data.avatar = `http://${req.get('host')}/uploads/${image.filename}`;
+    return await this.restaurantService.create(id, data);
   }
 
-  @Put(':id')
+  @Put(':user_id/:id')
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: './src/public/uploads',
+        filename(req, file, callback) {
+          let filename = Date.now() + file.originalname;
+          filename = filename.split(' ').join('_');
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
   async update(
+    @Param('user_id') user_id: number,
     @Param('id') id: number,
+    @Req() req: Request,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: true,
+      }),
+    )
+    image: Express.Multer.File,
     @Body() data: UpdateRestaurantDTO,
   ): Promise<UpdateResult> {
-    return await this.restaurantService.update(id, data);
+    const currentData = await this.restaurantService.getByID(id);
+    let fileName = currentData.avatar;
+    if (image) {
+      fileName = `http://${req.get('host')}/uploads/${image.filename}`;
+    }
+    data.avatar = fileName;
+    return await this.restaurantService.update(user_id, id, data);
   }
 
   @Delete(':id')

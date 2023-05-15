@@ -8,6 +8,7 @@ async function bootstrap() {
     cors: true,
   });
   app.useGlobalPipes(new ValidationPipe());
+  app.useStaticAssets('./src/public')
   await app.listen(8000);
 }
 bootstrap();

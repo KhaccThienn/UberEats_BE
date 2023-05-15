@@ -1,9 +1,12 @@
+/* eslint-disable prettier/prettier */
 export class CreateRestaurantDTO {
-    name: string;
+  name: string;
 
-    address: string;
-
-    email: string;
-
-    phone: string;
-};
+  address: string;
+  
+  email: string;
+  
+  phone: string;
+  
+  avatar: string;
+}

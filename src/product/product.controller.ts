@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { diskStorage } from 'multer';
 import {
   Body,
@@ -73,7 +74,6 @@ export class ProductController {
         filename(req, file, callback) {
           let filename = Date.now() + file.originalname;
           filename = filename.split(' ').join('_');
-          let fullpath = 'http://' + req.get('host') + '/public' + filename;
           callback(null, filename);
         },
       }),
