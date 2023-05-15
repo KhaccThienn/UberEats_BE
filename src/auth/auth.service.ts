@@ -97,7 +97,6 @@ export class AuthService {
     const tokens = await this.signJwtToken(userFound.id, userFound.role);
     await this.updateRefreshToken(userFound.id.toString(), tokens.refreshToken);
     return tokens;
-
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
@@ -140,7 +139,6 @@ export class AuthService {
   }
   async signJwtToken(
     id: number,
-
     role: number,
   ): Promise<{
     accessToken: string;

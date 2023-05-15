@@ -1,15 +1,21 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RestaurantEntity } from './entity/restaurant.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateRestaurantDTO } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDTO } from './dto/update-restaurant.dto';
+import { User } from 'src/user/entity/user.entity';
 
 @Injectable()
 export class RestaurantService {
   constructor(
     @InjectRepository(RestaurantEntity)
     private readonly restaurantRepository: Repository<RestaurantEntity>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+
   ) {}
 
   async queryBuilder(query: string) {
@@ -19,20 +25,44 @@ export class RestaurantService {
   async getAll(): Promise<RestaurantEntity[]> {
     return await this.restaurantRepository.find();
   }
-
-  async getByID(id: number): Promise<RestaurantEntity[]> {
-    return await this.restaurantRepository.findBy({ id });
+  async getByID(id: number): Promise<RestaurantEntity> {
+    return await this.restaurantRepository.findOne({
+      where: [{ id: id }],
+      relations: ['products'],
+    });
   }
 
-  async create(newRestaurant: CreateRestaurantDTO): Promise<RestaurantEntity> {
+  async create(
+    id: number,
+    restaurant: CreateRestaurantDTO,
+  ): Promise<RestaurantEntity> {
+    const user = await this.userRepository.findOne({
+      where: [{ id: id }],
+    });
+
+    const newRestaurant = this.restaurantRepository.create({
+      ...restaurant,
+      user,
+    });
+
     return await this.restaurantRepository.save(newRestaurant);
   }
 
   async update(
+    userId: number,
     id: number,
     restaurant: UpdateRestaurantDTO,
   ): Promise<UpdateResult> {
-    return await this.restaurantRepository.update(id, restaurant);
+    const user = await this.userRepository.findOne({
+      where: [{ id: userId }],
+    });
+
+    const newRestaurant = this.restaurantRepository.create({
+      ...restaurant,
+      user,
+    });
+    return await this.restaurantRepository.update(id, newRestaurant);
+
   }
 
   async delete(id: number): Promise<DeleteResult> {

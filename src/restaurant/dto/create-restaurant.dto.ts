@@ -1,3 +1,4 @@
+
 import { Expose } from 'class-transformer';
 import { IsNotEmpty,MinLength, IsString, IsEmail } from 'class-validator';
 
@@ -13,6 +14,8 @@ export class CreateRestaurantDTO {
     @Expose()
     address: string;
 
+    avatar: string;
+  
     @IsNotEmpty()
     @IsString()
     @IsEmail()

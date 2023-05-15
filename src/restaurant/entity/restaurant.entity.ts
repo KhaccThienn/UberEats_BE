@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { OrderDeatailsEntity } from 'src/order_details/entity/order_details.entity';
 import { ProductEntity } from 'src/product/entity/product.entity';
 import { User } from 'src/user/entity/user.entity';
@@ -17,6 +18,13 @@ export class RestaurantEntity {
     nullable: false,
   })
   name: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: false,
+  })
+  avatar: string;
 
   @Column({
     type: 'varchar',

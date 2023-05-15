@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Expose } from 'class-transformer';
 import { IsNotEmpty,MinLength, IsString, IsEmail } from 'class-validator';
 
@@ -12,6 +13,8 @@ export class UpdateRestaurantDTO {
     @IsString()
     @Expose()
     address: string;
+  
+    avatar?: string;
   
     @IsNotEmpty()
     @IsString()
