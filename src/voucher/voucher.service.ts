@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { VoucherEntity } from './entity/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,7 +13,7 @@ export class VoucherService {
     private readonly voucherRepository: Repository<VoucherEntity>,
 
     @InjectRepository(RestaurantEntity)
-        private readonly restaurantRepository: Repository<RestaurantEntity>
+    private readonly restaurantRepository: Repository<RestaurantEntity>,
   ) {}
 
   async getAll(): Promise<VoucherEntity[]> {
@@ -23,13 +24,13 @@ export class VoucherService {
     return await this.voucherRepository.findBy({ id });
   }
 
-  async create(id:number,voucher: CreateVoucherDTO): Promise<VoucherEntity> {
-    const restaurant = await this.restaurantRepository.findOneBy({id});
+  async create(id: number, voucher: CreateVoucherDTO): Promise<VoucherEntity> {
+    const restaurant = await this.restaurantRepository.findOneBy({ id });
     const newVoucher = this.voucherRepository.create({
-        ...voucher,
-        restaurant
+      ...voucher,
+      restaurant,
     });
-    
+
     return await this.voucherRepository.save(newVoucher);
   }
 
@@ -38,10 +39,12 @@ export class VoucherService {
     id: number,
     voucher: UpdateVoucherDTO,
   ): Promise<UpdateResult> {
-    const restaurant = await this.restaurantRepository.findOneBy({id:restaurantId});
+    const restaurant = await this.restaurantRepository.findOneBy({
+      id: restaurantId,
+    });
     const newVoucher = this.voucherRepository.create({
-        ...voucher,
-        restaurant
+      ...voucher,
+      restaurant,
     });
     return await this.voucherRepository.update(id, newVoucher);
   }

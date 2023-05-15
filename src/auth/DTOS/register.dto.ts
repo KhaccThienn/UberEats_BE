@@ -12,7 +12,7 @@ export class RegisterDTO {
   @IsNotEmpty()
   @IsString()
   @Expose()
-  userName: string;
+  username: string;
 
   @IsNotEmpty()
   @IsString()
