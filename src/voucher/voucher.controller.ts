@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { VoucherService } from './voucher.service';
 import { VoucherEntity } from './entity/voucher.entity';
 import { CreateVoucherDTO } from './dto/create-voucher.dto';
@@ -10,7 +19,7 @@ export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
   @Get()
-  async getAll():Promise<VoucherEntity[]>{
+  async getAll(): Promise<VoucherEntity[]> {
     return await this.voucherService.getAll();
   }
 
@@ -20,17 +29,20 @@ export class VoucherController {
   }
 
   @Post(':id')
-  async create(@Param('id') id:number,@Body() data: CreateVoucherDTO): Promise<VoucherEntity> {
-    return await this.voucherService.create(id,data);
+  async create(
+    @Param('id') id: number,
+    @Body() data: CreateVoucherDTO,
+  ): Promise<VoucherEntity> {
+    return await this.voucherService.create(id, data);
   }
 
   @Put(':id/:restaurantId')
   async update(
-    @Param('restaurantId') restaurantId:number,
+    @Param('restaurantId') restaurantId: number,
     @Param('id') id: number,
     @Body() data: UpdateVoucherDTO,
   ): Promise<UpdateResult> {
-    return await this.voucherService.update(restaurantId,id, data);
+    return await this.voucherService.update(restaurantId, id, data);
   }
 
   @Delete(':id')
