@@ -65,7 +65,7 @@ export class ProductController {
   async getByID(
     @Param('id') id: number,
     @Param('slugs') slugs: string,
-  ): Promise<ProductEntity[]> {
+  ): Promise<ProductEntity> {
     console.log(slugs);
 
     return await this.productService.getByID(id);

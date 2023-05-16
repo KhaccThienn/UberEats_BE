@@ -31,6 +31,7 @@ import { ConfigModule } from '@nestjs/config';
       username: 'root',
       password: '',
       database: 'sota_project',
+      autoLoadEntities: true,
       entities: [
         User,
         RestaurantEntity,

@@ -21,6 +21,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('register')
   register(@Body() user: RegisterDTO): Promise<User> {
+    console.log(user);
+    
     return this.authService.registerAccount(user);
   }
 
@@ -33,7 +35,9 @@ export class AuthController {
   @UseGuards(AccessTokenGuard)
   @Get('logout')
   logout(@Req() req: Request) {
-    this.authService.logOut(req.user['subject']);
+    console.log(req.user);
+    
+    return this.authService.logOut(req.user['subject']);
   }
 
   @UseGuards(RefreshTokenGuard)
