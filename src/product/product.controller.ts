@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { diskStorage } from 'multer';
 import {
   Body,
@@ -52,7 +53,7 @@ export class ProductController {
 
     // paginate
     const page: number = parseInt(req.query.page as any) || 1;
-    const perpage: number = parseInt(req.query.limit as any) || 4;
+    const perpage: number = parseInt(req.query.limit as any) || 9;
 
     builder.offset((page - 1) * perpage).limit(perpage);
 
@@ -60,12 +61,17 @@ export class ProductController {
     return builder.getMany();
   }
 
-  @Get(':id')
-  async getByID(@Param('id') id: number): Promise<ProductEntity[]> {
+  @Get(':id-:slugs')
+  async getByID(
+    @Param('id') id: number,
+    @Param('slugs') slugs: string,
+  ): Promise<ProductEntity> {
+    console.log(slugs);
+
     return await this.productService.getByID(id);
   }
 
-  @Post(':id')
+  @Post(':restaurantId')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -73,14 +79,13 @@ export class ProductController {
         filename(req, file, callback) {
           let filename = Date.now() + file.originalname;
           filename = filename.split(' ').join('_');
-          let fullpath = 'http://' + req.get('host') + '/public' + filename;
           callback(null, filename);
         },
       }),
     }),
   )
   async create(
-    @Param('id') id: number,
+    @Param('restaurantId') restaurantId: number,
     @UploadedFile(
       new ParseFilePipe({
         fileIsRequired: true,
@@ -90,7 +95,7 @@ export class ProductController {
     @Body() data: CreateProductDTO,
   ): Promise<ProductEntity> {
     data.image = image.filename;
-    return await this.productService.create(id, data);
+    return await this.productService.create(restaurantId, data);
   }
 
   @Put(':id/:restaurantId')

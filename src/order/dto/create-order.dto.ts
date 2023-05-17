@@ -1,7 +1,17 @@
+/* eslint-disable prettier/prettier */
+import { Expose } from 'class-transformer';
+import { IsNotEmpty, MinLength, IsString, IsEmail } from 'class-validator';
 export class CreateOrderDTO {
-    delivered_address: string;
+  @IsNotEmpty()
+  @IsString()
+  @Expose()
+  delivered_address: string;
 
-    delivered_phone: number;
-    
-    status: number;
-};
+  @IsNotEmpty()
+  @Expose()
+  delivered_phone: number;
+
+  @IsNotEmpty()
+  @Expose()
+  status: number;
+}

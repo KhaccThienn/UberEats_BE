@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+import { Role } from 'src/auth/model/role.enum';
 import { OrderEntity } from 'src/order/entity/order.entity';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
@@ -14,7 +16,7 @@ export class User {
     length: 100,
     nullable: false,
   })
-  username: string;
+  userName: string;
 
   @Column({
     type: 'text',
@@ -34,7 +36,7 @@ export class User {
     length: 20,
     nullable: false,
   })
-  phone: number;
+  phone: string;
 
   @Column({
     type: 'varchar',
@@ -48,9 +50,17 @@ export class User {
   password: string;
 
   @Column({
-    type:'tinyint',
+    type: 'enum',
+    enum: Role,
+    default: Role.CLIENT,
   })
   role: number;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+  })
+  refresh_token: string;
 
   @OneToMany(() => RestaurantEntity, (restaurant) => restaurant.user)
   restaurant: RestaurantEntity[];

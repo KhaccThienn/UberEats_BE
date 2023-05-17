@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,9 +16,14 @@ import { OrderModule } from './order/order.module';
 import { OrderEntity } from './order/entity/order.entity';
 import { OrderDetailsModule } from './order_details/order_details.module';
 import { OrderDeatailsEntity } from './order_details/entity/order_details.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -25,13 +31,14 @@ import { OrderDeatailsEntity } from './order_details/entity/order_details.entity
       username: 'root',
       password: '',
       database: 'sota_project',
+      autoLoadEntities: true,
       entities: [
         User,
         RestaurantEntity,
         ProductEntity,
         VoucherEntity,
         OrderEntity,
-        OrderDeatailsEntity
+        OrderDeatailsEntity,
       ],
       synchronize: true,
     }),
@@ -41,7 +48,8 @@ import { OrderDeatailsEntity } from './order_details/entity/order_details.entity
     ProductModule,
     VoucherModule,
     OrderModule,
-    OrderDetailsModule],
+    OrderDetailsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
