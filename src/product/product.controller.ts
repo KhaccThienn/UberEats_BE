@@ -52,13 +52,15 @@ export class ProductController {
     }
 
     // paginate
-    const page: number = parseInt(req.query.page as any) || 1;
-    const perpage: number = parseInt(req.query.limit as any) || 9;
+    if (req.query.page) {
+      const page: number = parseInt(req.query.page as any) || 2;
+      const perpage: number = parseInt(req.query.limit as any) || 2;
 
-    builder.offset((page - 1) * perpage).limit(perpage);
+      builder.offset((page - 1) * perpage).limit(perpage);
+    }
 
     // console.log(builder.getQuery());
-    return builder.getMany();
+    return await builder.getMany();
   }
 
   @Get(':id-:slugs')
@@ -75,7 +77,7 @@ export class ProductController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './src/public',
+        destination: './src/public/uploads',
         filename(req, file, callback) {
           let filename = Date.now() + file.originalname;
           filename = filename.split(' ').join('_');
@@ -85,16 +87,13 @@ export class ProductController {
     }),
   )
   async create(
+    @Req() req: Request,
     @Param('restaurantId') restaurantId: number,
-    @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: true,
-      }),
-    )
+    @UploadedFile()
     image: Express.Multer.File,
     @Body() data: CreateProductDTO,
   ): Promise<ProductEntity> {
-    data.image = image.filename;
+    data.image = `http://${req.get('host')}/uploads/${image.filename}`;
     return await this.productService.create(restaurantId, data);
   }
 
@@ -112,6 +111,7 @@ export class ProductController {
     }),
   )
   async update(
+    @Req() req: Request,
     @Param('restaurantId') categoryId: number,
     @Param('id') id: number,
     @UploadedFile() image: Express.Multer.File,
@@ -120,7 +120,7 @@ export class ProductController {
     const currentData = await this.productService.getByID(id);
     let fileName = currentData[0].image;
     if (image) {
-      fileName = image.filename;
+      fileName = `http://${req.get('host')}/uploads/${image.filename}`;
     }
     data.image = fileName;
     return await this.productService.update(categoryId, id, data);

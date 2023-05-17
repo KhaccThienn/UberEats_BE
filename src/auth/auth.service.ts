@@ -48,7 +48,7 @@ export class AuthService {
     }
     const hashedPassword = await this.hashedData(user.password);
     user.password = hashedPassword;
-
+    console.log(user);
     return this.userRepo.save({
       userName: user.userName,
       email: user.email,
@@ -73,6 +73,8 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     }
+    console.log(user);
+    
     const matchPass = await argon.verify(user.password, password);
     if (!matchPass) {
       throw new HttpException(
