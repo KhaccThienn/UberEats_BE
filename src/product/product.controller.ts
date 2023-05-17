@@ -89,7 +89,12 @@ export class ProductController {
   )
   async create(
     @Req() req: Request,
-    @UploadedFile()
+    @Param('id') id: number,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: true,
+      }),
+    )
     image: Express.Multer.File,
     @Body() data: CreateProductDTO,
   ): Promise<ProductEntity> {

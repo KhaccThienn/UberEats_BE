@@ -28,7 +28,7 @@ export class VoucherController {
     return await this.voucherService.getByID(id);
   }
 
-  @Post(':restaurantId')
+  @Post()
   async create(@Body() data: CreateVoucherDTO): Promise<VoucherEntity> {
     return await this.voucherService.create(data);
   }
