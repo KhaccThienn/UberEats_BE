@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Expose, Type } from "class-transformer";
 import { IsNotEmpty,IsNumber,Min,MinLength } from "class-validator";
 
@@ -7,8 +8,6 @@ export class CreateProductDTO {
     @Expose()
     name:string;
 
-    @IsNotEmpty()
-    @Expose()
     image: string;
 
     @IsNumber()
