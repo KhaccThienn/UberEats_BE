@@ -19,6 +19,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateProductDTO } from './dto/create-product.dto';
 import { UpdateResult } from 'typeorm';
 import { Request } from 'express';
+import { unlinkSync } from 'fs';
+import { UpdateProductDTO } from './dto/update-product.dto';
 
 @Controller('product')
 export class ProductController {
@@ -69,11 +71,10 @@ export class ProductController {
     @Param('slugs') slugs: string,
   ): Promise<ProductEntity> {
     console.log(slugs);
-
     return await this.productService.getByID(id);
   }
 
-  @Post(':restaurantId')
+  @Post()
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -88,20 +89,24 @@ export class ProductController {
   )
   async create(
     @Req() req: Request,
-    @Param('restaurantId') restaurantId: number,
-    @UploadedFile()
+    @Param('id') id: number,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: true,
+      }),
+    )
     image: Express.Multer.File,
     @Body() data: CreateProductDTO,
   ): Promise<ProductEntity> {
     data.image = `http://${req.get('host')}/uploads/${image.filename}`;
-    return await this.productService.create(restaurantId, data);
+    return await this.productService.create(data);
   }
 
-  @Put(':id/:restaurantId')
+  @Put(':id')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './src/public',
+        destination: './src/public/uploads',
         filename(req, file, callback) {
           const dateNow = Date.now();
           const fileName = dateNow + file.originalname;
@@ -112,22 +117,36 @@ export class ProductController {
   )
   async update(
     @Req() req: Request,
-    @Param('restaurantId') categoryId: number,
     @Param('id') id: number,
     @UploadedFile() image: Express.Multer.File,
-    @Body() data: CreateProductDTO,
+    @Body() data: UpdateProductDTO,
   ): Promise<UpdateResult> {
     const currentData = await this.productService.getByID(id);
-    let fileName = currentData[0].image;
+    let fileName = currentData.image;
     if (image) {
+      const filePath = currentData.image.replace(
+        `http://${req.get('host')}/uploads/`,
+        '',
+      );
+      console.log(filePath);
+      unlinkSync('./src/public/uploads/' + filePath);
       fileName = `http://${req.get('host')}/uploads/${image.filename}`;
     }
     data.image = fileName;
-    return await this.productService.update(categoryId, id, data);
+    return await this.productService.update(id, data);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Req() req: Request, @Param('id') id: number) {
+    const currentData = await this.productService.getByID(id);
+    console.log(currentData);
+
+    const filePath = currentData.image.replace(
+      `http://${req.get('host')}/uploads/`,
+      '',
+    );
+    console.log(filePath);
+    unlinkSync('./src/public/uploads/' + filePath);
     return await this.productService.delete(id);
   }
 }

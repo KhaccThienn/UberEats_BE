@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Expose, Type } from "class-transformer";
 import { IsNotEmpty,IsNumber,Min,MinLength } from "class-validator";
 export class UpdateProductDTO {
@@ -28,4 +29,6 @@ export class UpdateProductDTO {
     @IsNotEmpty()
     @Expose()
     description: string;
+
+    restaurantId: number;
 };

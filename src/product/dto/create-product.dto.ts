@@ -28,4 +28,6 @@ export class CreateProductDTO {
     @IsNotEmpty()
     @Expose()
     description: string;
+
+    restaurantId: number;
 };

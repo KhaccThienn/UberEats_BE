@@ -29,29 +29,27 @@ export class ProductService {
     return await this.productRepository.findOneBy({ id });
   }
 
-  async create(
-    restaurantId: number,
-    product: CreateProductDTO,
-  ): Promise<ProductEntity> {
+  async create(product: CreateProductDTO): Promise<ProductEntity> {
     const restaurant = await this.restaurantRepository.findOneBy({
-      id: restaurantId,
+      id: product.restaurantId,
     });
-
+    
+    
     const newProduct = this.productRepository.create({
       ...product,
       restaurant,
     });
+    // console.log(newProduct);
 
     return this.productRepository.save(newProduct);
   }
 
   async update(
-    restaurantId: number,
     id: number,
     product: UpdateProductDTO,
   ): Promise<UpdateResult> {
     const restaurant = await this.restaurantRepository.findOneBy({
-      id: restaurantId,
+      id: product.restaurantId,
     });
 
     const newProduct = this.productRepository.create({
