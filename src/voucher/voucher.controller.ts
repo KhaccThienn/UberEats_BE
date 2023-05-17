@@ -29,20 +29,16 @@ export class VoucherController {
   }
 
   @Post(':restaurantId')
-  async create(
-    @Param('restaurantId') restaurantId: number,
-    @Body() data: CreateVoucherDTO,
-  ): Promise<VoucherEntity> {
-    return await this.voucherService.create(restaurantId, data);
+  async create(@Body() data: CreateVoucherDTO): Promise<VoucherEntity> {
+    return await this.voucherService.create(data);
   }
 
-  @Put(':id/:restaurantId')
+  @Put(':id')
   async update(
-    @Param('restaurantId') restaurantId: number,
     @Param('id') id: number,
     @Body() data: UpdateVoucherDTO,
   ): Promise<UpdateResult> {
-    return await this.voucherService.update(restaurantId, id, data);
+    return await this.voucherService.update(id, data);
   }
 
   @Delete(':id')
