@@ -29,8 +29,13 @@ export class ProductService {
     return await this.productRepository.findOneBy({ id });
   }
 
-  async create(id: number, product: CreateProductDTO): Promise<ProductEntity> {
-    const restaurant = await this.restaurantRepository.findOneBy({ id });
+  async create(
+    restaurantId: number,
+    product: CreateProductDTO,
+  ): Promise<ProductEntity> {
+    const restaurant = await this.restaurantRepository.findOneBy({
+      id: restaurantId,
+    });
 
     const newProduct = this.productRepository.create({
       ...product,

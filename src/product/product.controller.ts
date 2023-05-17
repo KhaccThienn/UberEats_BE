@@ -71,7 +71,7 @@ export class ProductController {
     return await this.productService.getByID(id);
   }
 
-  @Post(':id')
+  @Post(':restaurantId')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -85,7 +85,7 @@ export class ProductController {
     }),
   )
   async create(
-    @Param('id') id: number,
+    @Param('restaurantId') restaurantId: number,
     @UploadedFile(
       new ParseFilePipe({
         fileIsRequired: true,
@@ -95,7 +95,7 @@ export class ProductController {
     @Body() data: CreateProductDTO,
   ): Promise<ProductEntity> {
     data.image = image.filename;
-    return await this.productService.create(id, data);
+    return await this.productService.create(restaurantId, data);
   }
 
   @Put(':id/:restaurantId')
