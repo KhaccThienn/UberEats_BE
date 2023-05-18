@@ -38,7 +38,8 @@ export class ProductService {
     const restaurant = await this.restaurantRepository.findOneBy({
       id: product.restaurantId,
     });
-
+    
+    
     const newProduct = this.productRepository.create({
       ...product,
       restaurant,
