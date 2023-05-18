@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module, forwardRef } from '@nestjs/common';
 import { VoucherService } from './voucher.service';
 import { VoucherController } from './voucher.controller';
@@ -8,10 +9,10 @@ import { RestaurantModule } from 'src/restaurant/restaurant.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([VoucherEntity]),
-    forwardRef(()=> RestaurantModule),
+    forwardRef(() => RestaurantModule),
   ],
   controllers: [VoucherController],
   providers: [VoucherService],
-  exports: [TypeOrmModule]
+  exports: [TypeOrmModule],
 })
 export class VoucherModule {}

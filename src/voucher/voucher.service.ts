@@ -17,16 +17,33 @@ export class VoucherService {
   ) {}
 
   async getAll(): Promise<VoucherEntity[]> {
-    return await this.voucherRepository.find();
+    return await this.voucherRepository.find({
+      relations: {
+        orders: true,
+        restaurant: true,
+      },
+    });
   }
 
-  async getByID(id: number): Promise<VoucherEntity[]> {
-    return await this.voucherRepository.findBy({ id });
+  queryBuilder(query: string) {
+    return this.voucherRepository.createQueryBuilder(query);
   }
 
-  async create(
-    voucher: CreateVoucherDTO,
-  ): Promise<VoucherEntity> {
+  async getByID(id: number): Promise<VoucherEntity> {
+    return await this.voucherRepository.findOne({
+      relations: {
+        orders: true,
+        restaurant: true,
+      },
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  async create(voucher: CreateVoucherDTO): Promise<VoucherEntity> {
+    console.log(voucher);
+
     const restaurant = await this.restaurantRepository.findOneBy({
       id: voucher.restaurantId,
     });
@@ -34,14 +51,12 @@ export class VoucherService {
       ...voucher,
       restaurant,
     });
+    console.log(newVoucher);
 
     return await this.voucherRepository.save(newVoucher);
   }
 
-  async update(
-    id: number,
-    voucher: UpdateVoucherDTO,
-  ): Promise<UpdateResult> {
+  async update(id: number, voucher: UpdateVoucherDTO): Promise<UpdateResult> {
     const restaurant = await this.restaurantRepository.findOneBy({
       id: voucher.restaurantId,
     });

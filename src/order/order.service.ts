@@ -1,11 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderEntity } from './entity/order.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateOrderDTO } from './dto/create-order.dto';
 import { UpdateOrderDTO } from './dto/update-order.dto';
 import { User } from 'src/user/entity/user.entity';
+import { VoucherEntity } from 'src/voucher/entity/voucher.entity';
 
 @Injectable()
 export class OrderService {
@@ -15,24 +16,47 @@ export class OrderService {
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(VoucherEntity)
+    private readonly voucherRepository: Repository<VoucherEntity>,
   ) {}
 
   async getAll(): Promise<OrderEntity[]> {
-    return await this.orderRepository.find();
+    return await this.orderRepository.find({
+      relations: {
+        user: true,
+        vouchers: true,
+      },
+    });
   }
 
-  async getByID(id: number): Promise<OrderEntity[]> {
-    return await this.orderRepository.findBy({ id });
+  async getByID(id: number): Promise<OrderEntity> {
+    return await this.orderRepository.findOne({
+      relations: {
+        user: true,
+        vouchers: true,
+      },
+      where: {
+        id: id,
+      },
+    });
   }
 
-  async create(userId: number, order: CreateOrderDTO): Promise<OrderEntity> {
+  async create(order: CreateOrderDTO): Promise<OrderEntity> {
     const user = await this.userRepository.findOne({
-      where: [{ id: userId }],
+      where: [{ id: order.userId }],
+    });
+
+    const vouchers = await this.voucherRepository.findOne({
+      where: {
+        id: order.vouchersId,
+      },
     });
 
     const newOrder = await this.orderRepository.create({
       ...order,
       user,
+      vouchers,
     });
     return await this.orderRepository.save(newOrder);
   }

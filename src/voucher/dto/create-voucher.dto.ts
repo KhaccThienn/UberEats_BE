@@ -1,8 +1,13 @@
 /* eslint-disable prettier/prettier */
+import { Expose } from "class-transformer";
+
 export class CreateVoucherDTO {
+    @Expose()
     name: string;
     
-    discout: number;
+    @Expose()
+    discount: number;
 
+    @Expose()
     restaurantId: number;
 };

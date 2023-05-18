@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { OrderEntity } from 'src/order/entity/order.entity';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
 import { PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
@@ -21,7 +22,7 @@ export class VoucherEntity {
         type:'float',
         nullable: false,
     })
-    discout: number;
+    discount: number;
 
     @ManyToOne(() => RestaurantEntity, (restaurant) => restaurant.vouchers)
     restaurant: RestaurantEntity;
