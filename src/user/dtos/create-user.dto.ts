@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Role } from 'src/auth/model/role.enum';
+import { Role } from 'src/model/role.enum';
 
 /* eslint-disable prettier/prettier */
 export class CreateUserDto {

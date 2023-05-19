@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Role } from './role.enum';
+import { Role } from '../../model/role.enum';
 
 export class User {
   id?: number;

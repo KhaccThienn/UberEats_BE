@@ -7,12 +7,12 @@ export class UpdateRestaurantDTO {
     @MinLength(3)
     @IsString()
     @Expose()
-    name: string;
+    name?: string;
   
     @IsNotEmpty()
     @IsString()
     @Expose()
-    address: string;
+    address?: string;
   
     avatar?: string;
   
@@ -20,9 +20,9 @@ export class UpdateRestaurantDTO {
     @IsString()
     @IsEmail()
     @Expose()
-    email: string;
+    email?: string;
   
     @IsNotEmpty()
     @Expose()
-    phone: string;
+    phone?: string;
 };

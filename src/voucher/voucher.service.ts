@@ -42,8 +42,6 @@ export class VoucherService {
   }
 
   async create(voucher: CreateVoucherDTO): Promise<VoucherEntity> {
-    console.log(voucher);
-
     const restaurant = await this.restaurantRepository.findOneBy({
       id: voucher.restaurantId,
     });
@@ -57,6 +55,8 @@ export class VoucherService {
   }
 
   async update(id: number, voucher: UpdateVoucherDTO): Promise<UpdateResult> {
+    console.log(voucher);
+
     const restaurant = await this.restaurantRepository.findOneBy({
       id: voucher.restaurantId,
     });
