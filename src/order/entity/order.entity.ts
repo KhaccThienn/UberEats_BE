@@ -3,7 +3,13 @@ import { OrderDeatailsEntity } from 'src/order_details/entity/order_details.enti
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
 import { User } from 'src/user/entity/user.entity';
 import { VoucherEntity } from 'src/voucher/entity/voucher.entity';
-import { PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { Entity } from 'typeorm';
 
 @Entity('order')
@@ -26,6 +32,10 @@ export class OrderEntity {
     nullable: false,
   })
   delivered_phone: number;
+
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true, eager: true })
+  @JoinColumn({ name: 'driverId' })
+  driver: User;
 
   @Column({
     type: 'tinyint',

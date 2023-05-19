@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Match } from 'src/auth/decorators/match.decorator';
-import { Role } from 'src/auth/model/role.enum';
+import { Match } from 'src/decorators/match.decorator';
+import { Role } from 'src/model/role.enum';
 
 /* eslint-disable prettier/prettier */
 export class UpdatePasswordDTO {

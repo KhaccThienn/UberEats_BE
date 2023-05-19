@@ -24,16 +24,15 @@ export class OrderController {
   }
 
   @Get(':id')
-  async getByID(@Param('id') id: number): Promise<OrderEntity[]> {
+  async getByID(@Param('id') id: number): Promise<OrderEntity> {
     return await this.orderService.getByID(id);
   }
 
-  @Post(':userID')
+  @Post()
   async create(
-    @Param('userID') userID: number,
     @Body() data: CreateOrderDTO,
   ): Promise<OrderEntity> {
-    return await this.orderService.create(userID, data);
+    return await this.orderService.create(data);
   }
 
   @Put(':id/:userID')

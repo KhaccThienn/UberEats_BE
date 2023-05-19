@@ -54,14 +54,14 @@ export class ProductController {
     }
 
     // paginate
-    if (req.query.page) {
-      const page: number = parseInt(req.query.page as any) || 2;
+    if (req.query.page || req.query.limit) {
+      const page: number = parseInt(req.query.page as any) || 1;
       const perpage: number = parseInt(req.query.limit as any) || 2;
 
       builder.offset((page - 1) * perpage).limit(perpage);
     }
 
-    // console.log(builder.getQuery());
+    // console.log(await builder.getQuery());
     return await builder.getMany();
   }
 
@@ -70,7 +70,6 @@ export class ProductController {
     @Param('id') id: number,
     @Param('slugs') slugs: string,
   ): Promise<ProductEntity> {
-    console.log(slugs);
     return await this.productService.getByID(id);
   }
 
@@ -89,7 +88,6 @@ export class ProductController {
   )
   async create(
     @Req() req: Request,
-    @Param('id') id: number,
     @UploadedFile(
       new ParseFilePipe({
         fileIsRequired: true,
@@ -108,9 +106,9 @@ export class ProductController {
       storage: diskStorage({
         destination: './src/public/uploads',
         filename(req, file, callback) {
-          const dateNow = Date.now();
-          const fileName = dateNow + file.originalname;
-          callback(null, fileName);
+          let filename = Date.now() + file.originalname;
+          filename = filename.split(' ').join('_');
+          callback(null, filename);
         },
       }),
     }),
@@ -128,10 +126,10 @@ export class ProductController {
         `http://${req.get('host')}/uploads/`,
         '',
       );
-      console.log(filePath);
       unlinkSync('./src/public/uploads/' + filePath);
       fileName = `http://${req.get('host')}/uploads/${image.filename}`;
     }
+    // console.log(currentData);
     data.image = fileName;
     return await this.productService.update(id, data);
   }
@@ -139,7 +137,7 @@ export class ProductController {
   @Delete(':id')
   async delete(@Req() req: Request, @Param('id') id: number) {
     const currentData = await this.productService.getByID(id);
-    console.log(currentData);
+    // console.log(currentData);
 
     const filePath = currentData.image.replace(
       `http://${req.get('host')}/uploads/`,

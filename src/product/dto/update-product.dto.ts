@@ -7,7 +7,6 @@ export class UpdateProductDTO {
     @Expose()
     name:string;
 
-    @IsNotEmpty()
     @Expose()
     image: string;
 

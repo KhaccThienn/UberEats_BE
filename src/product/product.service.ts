@@ -17,8 +17,8 @@ export class ProductService {
     private readonly restaurantRepository: Repository<RestaurantEntity>,
   ) {}
 
-  async queryBuilder(query: string) {
-    return await this.productRepository.createQueryBuilder(query);
+  queryBuilder(query: string) {
+    return this.productRepository.createQueryBuilder(query);
   }
 
   async getAll(): Promise<ProductEntity[]> {
@@ -26,7 +26,12 @@ export class ProductService {
   }
 
   async getByID(id: number): Promise<ProductEntity> {
-    return await this.productRepository.findOneBy({ id });
+    return await this.productRepository.findOne({
+      relations: {
+        restaurant: true,
+      },
+      where: { id: id },
+    });
   }
 
   async create(product: CreateProductDTO): Promise<ProductEntity> {
@@ -44,10 +49,7 @@ export class ProductService {
     return this.productRepository.save(newProduct);
   }
 
-  async update(
-    id: number,
-    product: UpdateProductDTO,
-  ): Promise<UpdateResult> {
+  async update(id: number, product: UpdateProductDTO): Promise<UpdateResult> {
     const restaurant = await this.restaurantRepository.findOneBy({
       id: product.restaurantId,
     });

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Role } from 'src/auth/model/role.enum';
+import { Role } from 'src/model/role.enum';
 import { OrderEntity } from 'src/order/entity/order.entity';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';

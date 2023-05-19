@@ -14,4 +14,8 @@ export class CreateOrderDTO {
   @IsNotEmpty()
   @Expose()
   status: number;
+
+  userId: number;
+
+  vouchersId?: number;
 }

@@ -7,7 +7,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { Match } from '../decorators/match.decorator';
+import { Match } from '../../decorators/match.decorator';
 export class RegisterDTO {
   @IsNotEmpty()
   @IsString()
