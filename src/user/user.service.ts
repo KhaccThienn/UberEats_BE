@@ -6,12 +6,16 @@ import * as argon from 'argon2';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UpdatePasswordDTO } from './dtos/update-password.dto';
+import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+
+    @InjectRepository(RestaurantEntity)
+    private readonly restaurantRepository: Repository<RestaurantEntity>,
   ) {}
 
   async hashedData(password: string): Promise<string> {
@@ -45,8 +49,21 @@ export class UserService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
-    console.log(updateUserDto);
-    
+    const userData = await this.userRepo.findOne({
+      where: {
+        id: +id,
+      },
+    });
+    const restaurants = await this.restaurantRepository.findBy({
+      user: userData,
+    });
+    console.log('Users Restaurant Data: ', restaurants);
+
+    // const newUserData = await this.userRepo.create({
+    //   ...restaurants,
+    //   updateUserDto,
+    // });
+
     return await this.userRepo.update(id, updateUserDto);
   }
 
