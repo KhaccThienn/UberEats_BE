@@ -24,6 +24,7 @@ export class RestaurantService {
   async getAll(): Promise<RestaurantEntity[]> {
     return await this.restaurantRepository.find();
   }
+  
   async getByID(id: number): Promise<RestaurantEntity> {
     return await this.restaurantRepository.findOne({
       where: [{ id: id }],
