@@ -50,7 +50,7 @@ export class ProductController {
     // filter by restaurant
     if (req.query.restaurantID) {
       const cateID = +req.query.restaurantID;
-      builder.andWhere('restaurant.id = :resID', { cateID });
+      builder.andWhere(`restaurant.id = ${cateID}`);
     }
 
     // paginate

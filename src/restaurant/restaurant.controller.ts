@@ -38,7 +38,15 @@ export class RestaurantController {
     if (req.query.keyWord) {
       builder.andWhere(`restaurant.name LIKE '%${req.query.keyWord}%'`);
     }
-
+    // filter
+    if (req.query.sort) {
+      const sortQuery = req.query.sort;
+      const sortArr = sortQuery.toString().split('-');
+      builder.orderBy(
+        `product.${sortArr[0]}`,
+        sortArr[1] == 'ASC' ? 'ASC' : 'DESC',
+      );
+    }
     //paginate
     const page: number = parseInt(req.query.page as any) || 1;
     const perpage: number = parseInt(req.query.limit as any) || 9;
