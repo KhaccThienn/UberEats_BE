@@ -45,6 +45,8 @@ export class UserService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
+    console.log(updateUserDto);
+    
     return await this.userRepo.update(id, updateUserDto);
   }
 

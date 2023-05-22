@@ -15,7 +15,6 @@ export class RestaurantService {
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-
   ) {}
 
   async queryBuilder(query: string) {
@@ -33,11 +32,11 @@ export class RestaurantService {
   }
 
   async create(
-    id: number,
+    userID: number,
     restaurant: CreateRestaurantDTO,
   ): Promise<RestaurantEntity> {
     const user = await this.userRepository.findOne({
-      where: [{ id: id }],
+      where: [{ id: userID }],
     });
 
     const newRestaurant = this.restaurantRepository.create({
@@ -62,7 +61,6 @@ export class RestaurantService {
       user,
     });
     return await this.restaurantRepository.update(id, newRestaurant);
-
   }
 
   async delete(id: number): Promise<DeleteResult> {

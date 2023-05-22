@@ -3,7 +3,7 @@ import { Role } from 'src/model/role.enum';
 
 /* eslint-disable prettier/prettier */
 export class CreateUserDto {
-  username: string;
+  userName: string;
   avatar?: string;
   email: string;
   phone?: string;

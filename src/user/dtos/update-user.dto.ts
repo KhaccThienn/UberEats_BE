@@ -1,5 +1,31 @@
 /* eslint-disable prettier/prettier */
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateUserDto } from './create-user.dto';
+import { Expose } from 'class-transformer';
+import { IsNotEmpty, MinLength, IsString } from 'class-validator';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto {
+  @IsNotEmpty()
+  @MinLength(3)
+  @IsString()
+  @Expose()
+  userName?: string;
+
+  avatar?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Expose()
+  email?: string;
+
+  @IsNotEmpty()
+  @Expose()
+  phone?: string;
+
+  @Expose()
+  address?: string;
+
+  @IsString()
+  @Expose()
+  password?: string;
+  role?: number;
+  refresh_token?: string;
+}

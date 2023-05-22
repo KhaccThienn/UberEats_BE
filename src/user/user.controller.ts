@@ -24,6 +24,8 @@ export class UserController {
     @Param('userID') userID: string,
     @Body() userData: UpdateUserDto,
   ): Promise<UpdateResult> {
+    console.log(userData);
+    
     return await this.userService.update(userID, userData);
   }
 

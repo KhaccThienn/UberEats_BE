@@ -49,16 +49,21 @@ export class RestaurantController {
   }
 
   @Get(':id-:slugs')
-  async getByID(
+  async getByIDAndSlugs(
     @Param('id') id: number,
     @Param('slugs') slugs: string,
   ): Promise<RestaurantEntity> {
     console.log(slugs);
-    
+
     return await this.restaurantService.getByID(id);
   }
 
-  @Post(':id')
+  @Get(':id')
+  async getByID(@Param('id') id: number): Promise<RestaurantEntity> {
+    return await this.restaurantService.getByID(id);
+  }
+
+  @Post(':userID')
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
@@ -72,7 +77,7 @@ export class RestaurantController {
     }),
   )
   async create(
-    @Param('id') id: number,
+    @Param('userID') userID: number,
     @Req() req: Request,
     @UploadedFile(
       new ParseFilePipe({
@@ -83,7 +88,7 @@ export class RestaurantController {
     @Body() data: CreateRestaurantDTO,
   ): Promise<RestaurantEntity> {
     data.avatar = `http://${req.get('host')}/uploads/${image.filename}`;
-    return await this.restaurantService.create(id, data);
+    return await this.restaurantService.create(userID, data);
   }
 
   @Put(':user_id/:id')
@@ -103,11 +108,7 @@ export class RestaurantController {
     @Param('user_id') user_id: number,
     @Param('id') id: number,
     @Req() req: Request,
-    @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: true,
-      }),
-    )
+    @UploadedFile()
     image: Express.Multer.File,
     @Body() data: UpdateRestaurantDTO,
   ): Promise<UpdateResult> {
