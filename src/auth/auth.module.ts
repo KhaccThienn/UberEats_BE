@@ -8,6 +8,7 @@ import { User } from 'src/user/entity/user.entity';
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
 import { AccessTokenStrategy, RefreshTokenStrategy } from './strategy';
+import { RestaurantModule } from 'src/restaurant/restaurant.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AccessTokenStrategy, RefreshTokenStrategy } from './strategy';
     }),
     TypeOrmModule.forFeature([User]),
     forwardRef(() => UserModule),
+    forwardRef(() => RestaurantModule)
   ],
   controllers: [AuthController],
   providers: [

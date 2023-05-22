@@ -1,10 +1,23 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entity/user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UpdateResult } from 'typeorm';
 import { UpdatePasswordDTO } from './dtos/update-password.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { Req } from '@nestjs/common';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -20,12 +33,33 @@ export class UserController {
   }
 
   @Put(':userID')
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: './src/public/uploads',
+        filename(req, file, callback) {
+          let filename = Date.now() + file.originalname;
+          filename = filename.split(' ').join('_');
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
   async updateUserData(
+    @Req() req: Request,
     @Param('userID') userID: string,
     @Body() userData: UpdateUserDto,
+    @UploadedFile()
+    image: Express.Multer.File,
   ): Promise<UpdateResult> {
-    console.log(userData);
-    
+    const user_found = await this.userService.findById(userID);
+    console.log('user_found', user_found);
+    let avatar_name = user_found.avatar;
+    if (image) {
+      avatar_name = `http://${req.get('host')}/uploads/${image.filename}`;
+    }
+    // console.log('User Data In Controller: ', userData);
+    userData.avatar = avatar_name;
     return await this.userService.update(userID, userData);
   }
 
