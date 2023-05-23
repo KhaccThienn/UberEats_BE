@@ -60,10 +60,36 @@ export class RestaurantController {
   async getByIDAndSlugs(
     @Param('id') id: number,
     @Param('slugs') slugs: string,
+    @Req() req: Request,
   ): Promise<RestaurantEntity> {
-    console.log(slugs);
+    const builder = (await this.restaurantService.queryBuilder('restaurant'))
+      .leftJoinAndSelect('restaurant.products', 'product')
+      .leftJoinAndSelect('restaurant.vouchers', 'voucher')
+      .andWhere(`restaurant.id = ${id}`);
+    // search
+    if (req.query.keyWord) {
+      builder.andWhere(`product.name LIKE '%${req.query.keyWord}%'`);
+    }
+    // filter
+    if (req.query.sort) {
+      const sortQuery = req.query.sort;
+      const sortArr = sortQuery.toString().split('-');
+      builder.addOrderBy(
+        `product.${sortArr[0]}`,
+        sortArr[1] === 'ASC' ? 'ASC' : 'DESC',
+      );
+    }
 
-    return await this.restaurantService.getByID(id);
+    if (req.query.price) {
+      const priceSort = req.query.price;
+      const priceArr = priceSort.toString().split('-');
+      const start = priceArr[0] ? priceArr[0] : 0;
+      const end = priceArr[1] ? priceArr[1] : 100000000;
+      builder.andWhere(`product.price BETWEEN ${start} AND ${end}`);
+    }
+
+    return builder.getOne();
+    // return await this.restaurantService.getByID(id);
   }
 
   @Get(':id')

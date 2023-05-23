@@ -36,7 +36,7 @@ export class ProductController {
     if (req.query.keyWord) {
       builder.andWhere(`product.name LIKE '%${req.query.keyWord}%'`);
     }
-
+    
     // filter
     if (req.query.sort) {
       const sortQuery = req.query.sort;
