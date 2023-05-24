@@ -6,11 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { RestaurantModule } from 'src/restaurant/restaurant.module';
 import { RestaurantService } from 'src/restaurant/restaurant.service';
+import { CartModule } from 'src/cart/cart.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => RestaurantModule),
+    forwardRef(() => CartModule),
   ],
   controllers: [UserController],
   providers: [UserService, RestaurantService],

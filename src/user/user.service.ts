@@ -34,6 +34,7 @@ export class UserService {
     return this.userRepo.findOne({
       relations: {
         restaurant: true,
+        carts: true,
       },
       where: [{ id: +id }],
     });

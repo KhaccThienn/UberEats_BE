@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { Cart } from 'src/cart/entity/cart.entity';
 import { OrderDeatailsEntity } from 'src/order_details/entity/order_details.entity';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
 import { PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
@@ -53,4 +54,7 @@ export class ProductEntity {
 
   @OneToMany(() => OrderDeatailsEntity, (order_detail) => order_detail.products)
   order_details: OrderDeatailsEntity[];
+
+  @OneToMany(() => Cart, (cart) => cart.product)
+  carts: Cart[];
 }

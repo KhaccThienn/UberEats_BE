@@ -17,6 +17,7 @@ import { OrderEntity } from './order/entity/order.entity';
 import { OrderDetailsModule } from './order_details/order_details.module';
 import { OrderDeatailsEntity } from './order_details/entity/order_details.entity';
 import { ConfigModule } from '@nestjs/config';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ConfigModule } from '@nestjs/config';
     VoucherModule,
     OrderModule,
     OrderDetailsModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],
