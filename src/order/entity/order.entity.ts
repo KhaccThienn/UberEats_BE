@@ -43,6 +43,11 @@ export class OrderEntity {
   })
   status: number;
 
+  @Column({
+    type: 'float',
+  })
+  total_price: number;
+
   @ManyToOne(() => User, (user) => user.orders)
   user: User;
 

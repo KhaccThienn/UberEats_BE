@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { Cart } from 'src/cart/entity/cart.entity';
 import { Role } from 'src/model/role.enum';
 import { OrderEntity } from 'src/order/entity/order.entity';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
@@ -67,4 +68,7 @@ export class User {
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: OrderEntity[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  carts: Cart[];
 }
