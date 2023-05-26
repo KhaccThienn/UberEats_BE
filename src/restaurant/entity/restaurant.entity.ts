@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { OrderEntity } from 'src/order/entity/order.entity';
 import { OrderDeatailsEntity } from 'src/order_details/entity/order_details.entity';
 import { ProductEntity } from 'src/product/entity/product.entity';
 import { User } from 'src/user/entity/user.entity';
@@ -49,9 +50,12 @@ export class RestaurantEntity {
   @OneToMany(() => ProductEntity, (product) => product.restaurant)
   products: ProductEntity[];
 
-  @ManyToOne(()=> User,(user)=> user.restaurant)
+  @ManyToOne(() => User, (user) => user.restaurant)
   user: User;
 
   @OneToMany(() => VoucherEntity, (voucher) => voucher.restaurant)
   vouchers: VoucherEntity[];
+
+  @OneToMany(() => OrderEntity, (orders) => orders.restaurant)
+  orders: OrderEntity[];
 }

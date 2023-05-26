@@ -73,8 +73,6 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     }
-    console.log(user);
-
     const matchPass = await argon.verify(user.password, password);
     if (!matchPass) {
       throw new HttpException(

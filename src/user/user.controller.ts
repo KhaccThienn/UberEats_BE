@@ -18,7 +18,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Req } from '@nestjs/common';
 import { Request } from 'express';
-
+import { ApiTags } from '@nestjs/swagger';
+import { unlinkSync } from 'fs';
+@ApiTags('User API')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -56,6 +58,11 @@ export class UserController {
     console.log('user_found', user_found);
     let avatar_name = user_found.avatar;
     if (image) {
+      const filePath = user_found.avatar.replace(
+        'http://localhost:8000/uploads/',
+        '',
+      );
+      unlinkSync('./src/public/uploads/' + filePath);
       avatar_name = `http://${req.get('host')}/uploads/${image.filename}`;
     }
     // console.log('User Data In Controller: ', userData);
