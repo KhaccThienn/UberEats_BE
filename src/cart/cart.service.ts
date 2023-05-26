@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from './entity/cart.entity';
@@ -92,16 +93,21 @@ export class CartService {
   }
 
   async changeQuantity(updateCartDTO: UpdateCartDTO): Promise<UpdateResult> {
+    console.log('Service: ', updateCartDTO);
+
     const userFound = await this.userRepository.findOne({
       where: {
         id: updateCartDTO.userId,
       },
     });
+
     const productFound = await this.productRepository.findOne({
       where: {
         id: updateCartDTO.prodId,
       },
     });
+    console.log(productFound);
+
     const cartFound = await this.cartRepository.findOne({
       where: {
         product: productFound,
@@ -110,16 +116,37 @@ export class CartService {
     });
     console.log(cartFound);
 
-    return await this.cartRepository.update(cartFound, {
+    const newData = {
       quantity: updateCartDTO.quantity,
       total:
         productFound.sale_price > 0
           ? productFound.sale_price * updateCartDTO.quantity
           : productFound.price * updateCartDTO.quantity,
+    };
+    console.log('New Cart Data', newData);
+
+    const newCart = await this.cartRepository.update(cartFound, {
+      quantity: newData.quantity,
+      total: newData.total,
     });
+
+    console.log(newCart);
+    return newCart;
   }
 
   async removeFromCart(cartId: string) {
     return this.cartRepository.delete(cartId);
+  }
+
+  async removeAllCartByUser(userId: string) {
+    const userFound = await this.userRepository.findOne({
+      where: {
+        id: +userId,
+      },
+    });
+
+    return await this.cartRepository.delete({
+      user: userFound,
+    });
   }
 }

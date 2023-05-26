@@ -15,7 +15,8 @@ import { CreateVoucherDTO } from './dto/create-voucher.dto';
 import { UpdateVoucherDTO } from './dto/update-voucher.dto';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { Request } from 'express';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Voucher API')
 @Controller('voucher')
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
@@ -25,7 +26,8 @@ export class VoucherController {
     // return await this.voucherService.getAll();
     const builder = (await this.voucherService.queryBuilder('voucher'))
       .innerJoinAndSelect('voucher.restaurant', 'restaurant')
-      .leftJoinAndSelect('voucher.orders', 'orders');
+      .leftJoinAndSelect('voucher.orders', 'orders')
+      .leftJoinAndSelect('restaurant.user', 'user');
 
     // search
     if (req.query.keyWord) {
@@ -40,6 +42,11 @@ export class VoucherController {
         `voucher.${sortArr[0]}`,
         sortArr[1] == 'ASC' ? 'ASC' : 'DESC',
       );
+    }
+
+    if (req.query.userId) {
+      const cateID = +req.query.userId;
+      builder.andWhere(`user.id = ${cateID}`);
     }
 
     // filter by restaurant
@@ -63,6 +70,11 @@ export class VoucherController {
   @Get(':id')
   async getByID(@Param('id') id: number): Promise<VoucherEntity> {
     return await this.voucherService.getByID(id);
+  }
+
+  @Get('/restaurant/:resId')
+  async getByResId(@Param('resId') resId: number) {
+    return await this.voucherService.getByRestaurantID(resId);
   }
 
   @Post()

@@ -24,6 +24,22 @@ export class VoucherService {
       },
     });
   }
+  async getByRestaurantID(resId: number): Promise<VoucherEntity[]> {
+    const restaurantFounded = await this.restaurantRepository.findOne({
+      where: {
+        id: resId,
+      },
+    });
+    return await this.voucherRepository.find({
+      relations: {
+        orders: true,
+        restaurant: true,
+      },
+      where: {
+        restaurant: restaurantFounded,
+      },
+    });
+  }
 
   queryBuilder(query: string) {
     return this.voucherRepository.createQueryBuilder(query);

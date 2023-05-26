@@ -16,11 +16,8 @@ export class OrderDetailsService {
     private readonly orderRepository: Repository<OrderEntity>,
   ) {}
 
-  async create(
-    orderId: number,
-    orderDetail: CreateOrderDetailsDTO,
-  ): Promise<OrderDeatailsEntity> {
-    const orders = await this.orderRepository.findOne({
+  async getAllByOrderId(orderId: number) {
+    const orderFound = await this.orderRepository.findOne({
       where: [
         {
           id: orderId,
@@ -28,14 +25,12 @@ export class OrderDetailsService {
       ],
     });
 
-    const newOrderDetails = await this.orderDetailRepository.create({
-      ...orderDetail,
-      orders,
+    const listOrderDetail = await this.orderDetailRepository.find({
+      relations: {
+        product: true,
+        orders: true,
+      },
     });
-    return await this.orderDetailRepository.save(newOrderDetails);
-  }
-
-  async delete(id: number): Promise<DeleteResult> {
-    return await this.orderDetailRepository.delete(id);
+    return listOrderDetail;
   }
 }

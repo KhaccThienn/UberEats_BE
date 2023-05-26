@@ -15,14 +15,15 @@ import { RegisterDTO } from './DTOS/register.dto';
 import { Request } from 'express';
 import { LoginDTO } from './DTOS/login.dto';
 import { AccessTokenGuard, RefreshTokenGuard } from './guards';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Auth API')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('register')
   register(@Body() user: RegisterDTO): Promise<User> {
     console.log(user);
-    
+
     return this.authService.registerAccount(user);
   }
 
@@ -36,7 +37,7 @@ export class AuthController {
   @Get('logout')
   logout(@Req() req: Request) {
     console.log(req.user);
-    
+
     return this.authService.logOut(req.user['subject']);
   }
 
