@@ -31,9 +31,11 @@ export class OrderController {
     // return await this.voucherService.getAll();
     const builder = await this.orderService
       .queryBuilder('order')
+      .innerJoinAndSelect('order.user', 'orderUser')
       .leftJoinAndSelect('order.vouchers', 'voucher')
       .leftJoinAndSelect('order.restaurant', 'restaurant')
-      .leftJoinAndSelect('restaurant.user', 'user');
+      .leftJoinAndSelect('restaurant.user', 'user')
+      .leftJoinAndSelect('order.order_details', 'orderDetails');
 
     // search
     if (req.query.keyWord) {
@@ -50,15 +52,25 @@ export class OrderController {
       );
     }
 
-    if (req.query.userId) {
-      const cateID = +req.query.userId;
-      builder.andWhere(`user.id = ${cateID}`);
+    if (req.query.orderUser) {
+      const cateID = +req.query.orderUser;
+      builder.andWhere(`orderUser.id = ${cateID}`);
+    }
+
+    if (req.query.orderId) {
+      const orderId = +req.query.orderId;
+      builder.andWhere(`order.id = ${orderId}`);
     }
 
     // filter by restaurant
     if (req.query.restaurantID) {
       const cateID = +req.query.restaurantID;
       builder.andWhere('restaurant.id = :resID', { cateID });
+    }
+
+    if (req.query.status) {
+      const status = req.query.status;
+      builder.andWhere(`order.status > ${status}`);
     }
 
     // paginate
@@ -69,7 +81,7 @@ export class OrderController {
       builder.offset((page - 1) * perpage).limit(perpage);
     }
 
-    // console.log(await builder.getMany());
+    console.log(await builder.getQuery());
     return await builder.getMany();
   }
 

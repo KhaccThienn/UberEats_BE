@@ -51,10 +51,35 @@ export class OrderService {
       relations: {
         user: true,
         vouchers: true,
+        restaurant: true,
+        order_details: true,
       },
       where: {
         id: id,
       },
+    });
+  }
+
+  async getOrdersByUserId(userId: number) {
+    const userFound = await this.userRepository.findOne({
+      where: [
+        {
+          id: userId,
+        },
+      ],
+    });
+
+    return await this.orderRepository.find({
+      relations: {
+        user: true,
+        driver: true,
+        vouchers: true,
+      },
+      where: [
+        {
+          user: userFound,
+        },
+      ],
     });
   }
 

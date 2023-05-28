@@ -22,6 +22,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { unlinkSync } from 'fs';
 @ApiTags('User API')
 @Controller('user')
+
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get()
@@ -57,12 +58,15 @@ export class UserController {
     const user_found = await this.userService.findById(userID);
     console.log('user_found', user_found);
     let avatar_name = user_found.avatar;
-    if (image) {
+    if (image && user_found.avatar != '') {
       const filePath = user_found.avatar.replace(
         'http://localhost:8000/uploads/',
         '',
       );
       unlinkSync('./src/public/uploads/' + filePath);
+      avatar_name = `http://${req.get('host')}/uploads/${image.filename}`;
+    }
+    if (image && user_found.avatar == '') {
       avatar_name = `http://${req.get('host')}/uploads/${image.filename}`;
     }
     // console.log('User Data In Controller: ', userData);
