@@ -23,7 +23,6 @@ export class AuthController {
   @Post('register')
   register(@Body() user: RegisterDTO): Promise<User> {
     console.log(user);
-
     return this.authService.registerAccount(user);
   }
 

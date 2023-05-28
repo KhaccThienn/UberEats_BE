@@ -16,7 +16,13 @@ export class OrderDetailsService {
     private readonly orderRepository: Repository<OrderEntity>,
   ) {}
 
-  async getAllByOrderId(orderId: number) {
+  queryBuilder(query: string) {
+    return this.orderDetailRepository.createQueryBuilder(query);
+  }
+
+  async getAllByOrderId(orderId: number): Promise<OrderDeatailsEntity[]> {
+    console.log('ordersId:', orderId);
+
     const orderFound = await this.orderRepository.findOne({
       where: [
         {
@@ -24,13 +30,17 @@ export class OrderDetailsService {
         },
       ],
     });
+    console.log('orderFound', orderFound);
 
     const listOrderDetail = await this.orderDetailRepository.find({
       relations: {
-        product: true,
         orders: true,
+        product: true,
       },
+      where: [{ orders: orderFound }],
     });
+    console.log('List Order:', listOrderDetail);
+
     return listOrderDetail;
   }
 }
