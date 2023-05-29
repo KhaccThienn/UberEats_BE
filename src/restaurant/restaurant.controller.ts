@@ -39,6 +39,7 @@ export class RestaurantController {
     if (req.query.keyWord) {
       builder.andWhere(`restaurant.name LIKE '%${req.query.keyWord}%'`);
     }
+
     // filter
     if (req.query.sort) {
       const sortQuery = req.query.sort;
@@ -53,7 +54,6 @@ export class RestaurantController {
     const perpage: number = parseInt(req.query.limit as any) || 9;
 
     builder.offset((page - 1) * perpage).limit(perpage);
-
     return builder.getMany();
   }
 
@@ -70,6 +70,10 @@ export class RestaurantController {
     // search
     if (req.query.keyWord) {
       builder.andWhere(`product.name LIKE '%${req.query.keyWord}%'`);
+    }
+    if (req.query.status) {
+      const status = +req.query.status;
+      builder.andWhere(`product.status = ${status}`);
     }
     // filter
     if (req.query.sort) {
