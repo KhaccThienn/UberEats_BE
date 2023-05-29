@@ -21,22 +21,23 @@ import { UpdateResult } from 'typeorm';
 import { Request } from 'express';
 import { unlinkSync } from 'fs';
 import { UpdateProductDTO } from './dto/update-product.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Product API')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get()
   async getAll(@Req() req: Request): Promise<ProductEntity[]> {
-    const builder = (
-      await this.productService.queryBuilder('product')
-    ).innerJoinAndSelect('product.restaurant', 'restaurant');
+    const builder = (await this.productService.queryBuilder('product'))
+      .innerJoinAndSelect('product.restaurant', 'restaurant')
+    .leftJoinAndSelect('restaurant.user', 'user');
 
     // search
     if (req.query.keyWord) {
       builder.andWhere(`product.name LIKE '%${req.query.keyWord}%'`);
     }
-    
+
     // filter
     if (req.query.sort) {
       const sortQuery = req.query.sort;
@@ -51,6 +52,11 @@ export class ProductController {
     if (req.query.restaurantID) {
       const cateID = +req.query.restaurantID;
       builder.andWhere(`restaurant.id = ${cateID}`);
+    }
+
+    if (req.query.userId) {
+      const cateID = +req.query.userId;
+      builder.andWhere(`user.id = ${cateID}`);
     }
 
     // paginate

@@ -52,7 +52,7 @@ export class ProductEntity {
   @ManyToOne(() => RestaurantEntity, (restaurant) => restaurant.products)
   restaurant: RestaurantEntity;
 
-  @OneToMany(() => OrderDeatailsEntity, (order_detail) => order_detail.products)
+  @OneToMany(() => OrderDeatailsEntity, (order_detail) => order_detail.product)
   order_details: OrderDeatailsEntity[];
 
   @OneToMany(() => Cart, (cart) => cart.product)

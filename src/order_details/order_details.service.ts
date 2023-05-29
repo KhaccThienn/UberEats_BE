@@ -16,26 +16,31 @@ export class OrderDetailsService {
     private readonly orderRepository: Repository<OrderEntity>,
   ) {}
 
-  async create(
-    orderId: number,
-    orderDetail: CreateOrderDetailsDTO,
-  ): Promise<OrderDeatailsEntity> {
-    const orders = await this.orderRepository.findOne({
+  queryBuilder(query: string) {
+    return this.orderDetailRepository.createQueryBuilder(query);
+  }
+
+  async getAllByOrderId(orderId: number): Promise<OrderDeatailsEntity[]> {
+    console.log('ordersId:', orderId);
+
+    const orderFound = await this.orderRepository.findOne({
       where: [
         {
           id: orderId,
         },
       ],
     });
+    console.log('orderFound', orderFound);
 
-    const newOrderDetails = await this.orderDetailRepository.create({
-      ...orderDetail,
-      orders,
+    const listOrderDetail = await this.orderDetailRepository.find({
+      relations: {
+        orders: true,
+        product: true,
+      },
+      where: [{ orders: orderFound }],
     });
-    return await this.orderDetailRepository.save(newOrderDetails);
-  }
+    console.log('List Order:', listOrderDetail);
 
-  async delete(id: number): Promise<DeleteResult> {
-    return await this.orderDetailRepository.delete(id);
+    return listOrderDetail;
   }
 }

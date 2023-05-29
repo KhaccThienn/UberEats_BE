@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { Status } from 'src/model/status.enum';
 import { OrderDeatailsEntity } from 'src/order_details/entity/order_details.entity';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
 import { User } from 'src/user/entity/user.entity';
@@ -33,13 +34,26 @@ export class OrderEntity {
   })
   delivered_phone: number;
 
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  delivered_user: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  note: string;
+
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true, eager: true })
   @JoinColumn({ name: 'driverId' })
   driver: User;
 
   @Column({
-    type: 'tinyint',
-    default: 1,
+    type: 'enum',
+    enum: Status,
+    default: Status.PENDING,
   })
   status: number;
 
@@ -54,6 +68,15 @@ export class OrderEntity {
   @ManyToOne(() => VoucherEntity, (voucher) => voucher.orders)
   vouchers: VoucherEntity;
 
-  @OneToMany(() => OrderDeatailsEntity, (order_detail) => order_detail.products)
+  @ManyToOne(() => RestaurantEntity, (restaurant) => restaurant.orders)
+  restaurant: RestaurantEntity;
+
+  @OneToMany(
+    () => OrderDeatailsEntity,
+    (order_detail) => order_detail.product,
+    {
+      cascade: true,
+    },
+  )
   order_details: OrderDeatailsEntity[];
 }

@@ -73,8 +73,6 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     }
-    console.log(user);
-
     const matchPass = await argon.verify(user.password, password);
     if (!matchPass) {
       throw new HttpException(
@@ -137,6 +135,7 @@ export class AuthService {
 
     // update field refresh token trong database
     await this.updateRefreshToken(user.id.toString(), tokens.refreshToken);
+    console.log('Refresh token updated', tokens);
 
     return tokens;
   }
@@ -155,7 +154,7 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: process.env.SECRET_TOKEN_KEY,
-        expiresIn: '15m',
+        expiresIn: '1d',
       }),
       this.jwtService.signAsync(payload, {
         secret: process.env.SECRET_REFRESH_TOKEN_KEY,

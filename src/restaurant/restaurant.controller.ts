@@ -23,7 +23,8 @@ import { Request } from 'express';
 import { AccessTokenGuard } from 'src/auth/guards';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Restaurant API')
 @Controller('restaurant')
 export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) {}

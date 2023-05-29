@@ -15,7 +15,7 @@ export class OrderDeatailsEntity {
     type: 'float',
     nullable: false,
   })
-  price: number;
+  total: number;
 
   @Column({
     type: 'float',
@@ -23,8 +23,8 @@ export class OrderDeatailsEntity {
   })
   quantity: number;
 
-  @ManyToOne(() => ProductEntity, (product) => product.order_details)
-  products: ProductEntity;
+  @ManyToOne(() => ProductEntity, (products) => products.order_details)
+  product: ProductEntity;
 
   @ManyToOne(() => OrderEntity, (order) => order.order_details)
   orders: OrderEntity;
