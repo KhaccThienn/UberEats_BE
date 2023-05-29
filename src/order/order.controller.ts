@@ -32,9 +32,9 @@ export class OrderController {
     const builder = await this.orderService
       .queryBuilder('order')
       .innerJoinAndSelect('order.user', 'orderUser')
+      .innerJoinAndSelect('order.user', 'orderUser')
       .leftJoinAndSelect('order.vouchers', 'voucher')
       .leftJoinAndSelect('order.restaurant', 'restaurant')
-      .leftJoinAndSelect('order.driver', 'driver')
       .leftJoinAndSelect('restaurant.user', 'user')
       .leftJoinAndSelect('order.order_details', 'orderDetails');
 
@@ -74,11 +74,6 @@ export class OrderController {
       builder.andWhere(`order.status > ${status}`);
     }
 
-    if (req.query.status) {
-      const status = req.query.status;
-      builder.andWhere(`order.status > ${status}`);
-    }
-
     // paginate
     if (req.query.page || req.query.limit) {
       const page: number = parseInt(req.query.page as any) || 1;
@@ -86,6 +81,8 @@ export class OrderController {
 
       builder.offset((page - 1) * perpage).limit(perpage);
     }
+
+    // console.log(await builder.getMany());
     return await builder.getMany();
   }
 
