@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrderEntity } from './entity/order.entity';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { CreateOrderDTO } from './dto/create-order.dto';
-import { UpdateOrderDTO } from './dto/update-order.dto';
-import { User } from 'src/user/entity/user.entity';
-import { VoucherEntity } from 'src/voucher/entity/voucher.entity';
 import { OrderDeatailsEntity } from 'src/order_details/entity/order_details.entity';
 import { ProductEntity } from 'src/product/entity/product.entity';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
+import { User } from 'src/user/entity/user.entity';
+import { VoucherEntity } from 'src/voucher/entity/voucher.entity';
+import { DeleteResult, Repository } from 'typeorm';
+import { CreateOrderDTO } from './dto/create-order.dto';
+import { UpdateOrderDTO } from './dto/update-order.dto';
+import { OrderEntity } from './entity/order.entity';
 
 @Injectable()
 export class OrderService {
@@ -136,20 +136,24 @@ export class OrderService {
     return savedOrder;
   }
 
-  async update(
-    userID: number,
-    id: number,
-    order: UpdateOrderDTO,
-  ): Promise<UpdateResult> {
-    const user = await this.userRepository.findOne({
-      where: [{ id: userID }],
+  async updateStatus(id: number, order: UpdateOrderDTO) {
+    return await this.orderRepository.update(id, order);
+  }
+  async updateDeliver(id: number, deliverId: number, order: UpdateOrderDTO) {
+    const deliveryFound = await this.userRepository.findOne({
+      where: [
+        {
+          id: deliverId,
+        },
+      ],
     });
 
-    const newOrder = await this.orderRepository.create({
+    const updatedOrder = await this.orderRepository.create({
       ...order,
-      user,
+      driver: deliveryFound,
     });
-    return await this.orderRepository.update(id, newOrder);
+
+    return await this.orderRepository.update(id, updatedOrder);
   }
 
   async delete(id: number): Promise<DeleteResult> {

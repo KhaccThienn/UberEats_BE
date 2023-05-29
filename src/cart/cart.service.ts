@@ -23,10 +23,6 @@ export class CartService {
 
   async getAllCartByUser(userId: number) {
     const userFound = await this.userRepository.findOne({
-      relations: {
-        carts: true,
-        restaurant: true,
-      },
       where: {
         id: userId,
       },
@@ -125,7 +121,7 @@ export class CartService {
     };
     console.log('New Cart Data', newData);
 
-    const newCart = await this.cartRepository.update(cartFound, {
+    const newCart = await this.cartRepository.update(cartFound.id, {
       quantity: newData.quantity,
       total: newData.total,
     });
