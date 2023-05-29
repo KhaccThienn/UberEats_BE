@@ -18,6 +18,7 @@ import { OrderDetailsModule } from './order_details/order_details.module';
 import { OrderDeatailsEntity } from './order_details/entity/order_details.entity';
 import { ConfigModule } from '@nestjs/config';
 import { CartModule } from './cart/cart.module';
+import { UpdateStatusModule } from './update-status/update-status.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { CartModule } from './cart/cart.module';
     OrderModule,
     OrderDetailsModule,
     CartModule,
+    UpdateStatusModule,
   ],
   controllers: [AppController],
   providers: [AppService],

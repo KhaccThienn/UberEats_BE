@@ -31,7 +31,7 @@ export class ProductController {
   async getAll(@Req() req: Request): Promise<ProductEntity[]> {
     const builder = (await this.productService.queryBuilder('product'))
       .innerJoinAndSelect('product.restaurant', 'restaurant')
-    .leftJoinAndSelect('restaurant.user', 'user');
+      .leftJoinAndSelect('restaurant.user', 'user');
 
     // search
     if (req.query.keyWord) {
@@ -54,6 +54,7 @@ export class ProductController {
       builder.andWhere(`restaurant.id = ${cateID}`);
     }
 
+    
     if (req.query.userId) {
       const cateID = +req.query.userId;
       builder.andWhere(`user.id = ${cateID}`);
@@ -67,7 +68,7 @@ export class ProductController {
       builder.offset((page - 1) * perpage).limit(perpage);
     }
 
-    // console.log(await builder.getQuery());
+    console.log(await builder.getQuery());
     return await builder.getMany();
   }
 

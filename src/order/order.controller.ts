@@ -34,6 +34,7 @@ export class OrderController {
       .innerJoinAndSelect('order.user', 'orderUser')
       .leftJoinAndSelect('order.vouchers', 'voucher')
       .leftJoinAndSelect('order.restaurant', 'restaurant')
+      .leftJoinAndSelect('order.driver', 'driver')
       .leftJoinAndSelect('restaurant.user', 'user')
       .leftJoinAndSelect('order.order_details', 'orderDetails');
 
@@ -65,7 +66,7 @@ export class OrderController {
     // filter by restaurant
     if (req.query.restaurantID) {
       const cateID = +req.query.restaurantID;
-      builder.andWhere('restaurant.id = :resID', { cateID });
+      builder.andWhere(`restaurant.id = ${cateID}`);
     }
 
     if (req.query.status) {
@@ -81,7 +82,6 @@ export class OrderController {
       builder.offset((page - 1) * perpage).limit(perpage);
     }
 
-    console.log(await builder.getQuery());
     return await builder.getMany();
   }
 
@@ -95,13 +95,18 @@ export class OrderController {
     return await this.orderService.create(data);
   }
 
-  @Put(':id/:userID')
-  async update(
-    @Param('userID') userID: number,
+  @Put(':id')
+  async updateStatus(@Param('id') id: number, @Body() data: UpdateOrderDTO) {
+    return await this.orderService.updateStatus(id, data);
+  }
+
+  @Put(':id/:deliverID')
+  async updateDeliver(
     @Param('id') id: number,
+    @Param('deliverID') deliverID: number,
     @Body() data: UpdateOrderDTO,
-  ): Promise<UpdateResult> {
-    return await this.orderService.update(userID, id, data);
+  ) {
+    return await this.orderService.updateDeliver(id, deliverID, data);
   }
 
   @Delete(':id')
