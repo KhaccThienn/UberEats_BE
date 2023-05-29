@@ -74,6 +74,11 @@ export class OrderController {
       builder.andWhere(`order.status > ${status}`);
     }
 
+    if (req.query.status) {
+      const status = req.query.status;
+      builder.andWhere(`order.status > ${status}`);
+    }
+
     // paginate
     if (req.query.page || req.query.limit) {
       const page: number = parseInt(req.query.page as any) || 1;
@@ -81,7 +86,6 @@ export class OrderController {
 
       builder.offset((page - 1) * perpage).limit(perpage);
     }
-
     return await builder.getMany();
   }
 
