@@ -72,6 +72,10 @@ export class CartService {
     if (cartFound) {
       return this.cartRepository.update(cartFound, {
         quantity: cartFound.quantity + 1,
+        total:
+          productFound.sale_price > 0
+            ? productFound.sale_price * (cartFound.quantity + 1)
+            : productFound.price * (cartFound.quantity + 1),
       });
     }
 
@@ -115,9 +119,9 @@ export class CartService {
     const newData = {
       quantity: updateCartDTO.quantity,
       total:
-        productFound.sale_price > 0
-          ? productFound.sale_price * updateCartDTO.quantity
-          : productFound.price * updateCartDTO.quantity,
+        productFound.sale_price == 0
+          ? productFound.price * updateCartDTO.quantity
+          : productFound.sale_price * updateCartDTO.quantity,
     };
     console.log('New Cart Data', newData);
 

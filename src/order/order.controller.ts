@@ -32,7 +32,7 @@ export class OrderController {
     const builder = await this.orderService
       .queryBuilder('order')
       .innerJoinAndSelect('order.user', 'orderUser')
-      .innerJoinAndSelect('order.user', 'orderUser')
+      .leftJoinAndSelect('order.driver', 'driver')
       .leftJoinAndSelect('order.vouchers', 'voucher')
       .leftJoinAndSelect('order.restaurant', 'restaurant')
       .leftJoinAndSelect('restaurant.user', 'user')

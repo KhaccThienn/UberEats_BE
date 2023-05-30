@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module, forwardRef } from '@nestjs/common';
 import { UpdateStatusService } from './update-status.service';
 import { UpdateStatusGateway } from './update-status.gateway';
@@ -8,6 +9,7 @@ import { ProductModule } from 'src/product/product.module';
 import { RestaurantModule } from 'src/restaurant/restaurant.module';
 import { UserModule } from 'src/user/user.module';
 import { VoucherModule } from 'src/voucher/voucher.module';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { VoucherModule } from 'src/voucher/voucher.module';
     forwardRef(() => ProductModule),
     forwardRef(() => RestaurantModule),
   ],
-  providers: [UpdateStatusGateway, UpdateStatusService],
+  providers: [UpdateStatusGateway, UpdateStatusService, UserService],
   exports: [TypeOrmModule],
 })
 export class UpdateStatusModule {}

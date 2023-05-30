@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   ConnectedSocket,
   MessageBody,
@@ -12,6 +13,7 @@ import { Server, Socket } from 'socket.io';
 import { UpdateOrderDTO } from 'src/order/dto/update-order.dto';
 import { CreateOrderDTO } from 'src/order/dto/create-order.dto';
 import { Status } from 'src/model/status.enum';
+import { UserService } from 'src/user/user.service';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -22,7 +24,10 @@ export class UpdateStatusGateway
 {
   @WebSocketServer()
   server: Server;
-  constructor(private readonly updateStatusService: UpdateStatusService) {}
+  constructor(
+    private readonly updateStatusService: UpdateStatusService,
+    private readonly userService: UserService,
+  ) {}
   private orderStatus = 'Pending';
   handleConnection(client: Socket) {
     // Gửi trạng thái đơn hàng hiện tại cho client khi kết nối
@@ -44,12 +49,10 @@ export class UpdateStatusGateway
   }
 
   @SubscribeMessage('restaurantAcceptOrder')
-  acceptOrder(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: UpdateOrderDTO,
-  ) {
+  acceptOrder(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
     console.log({ client, data });
-    data.status === Status.COOKING
+
+    data.orderData.status == Status.COOKING
       ? this.server.emit('updateOrderStatusClient', data)
       : this.server.emit('updateOrderStatusDeliver', data);
 
@@ -57,14 +60,44 @@ export class UpdateStatusGateway
   }
 
   @SubscribeMessage('deliverAcceptOrder')
-  completeOrder(
+  async deliverAcceptOrder(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: UpdateOrderDTO,
+    @MessageBody() data: any,
   ) {
-    console.log(client);
+    console.log(data);
+    const deliveryFound = await this.userService.findById(
+      data.userData.user.subject,
+    );
+    data.deliver = deliveryFound;
+    this.server.emit('updateDeliver', data);
 
-    this.server.emit('deliverUpdateOrderStatus', data);
+    return data;
+  }
 
+  @SubscribeMessage('deliverPickupOrder')
+  async pickUpOrder(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    console.log(data);
+
+    const deliveryFound = await this.userService.findById(data.deliverId);
+    data.deliver = deliveryFound;
+    data.orderData.status === Status.PICKED
+      ? this.server.emit('deliverUpdateOrderStatus', data)
+      : this.server.emit('deliverShippingOrder', data);
+    return data;
+  }
+
+  @SubscribeMessage('deliverShipped')
+  async shippedOrder(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    console.log(data);
+    const deliveryFound = await this.userService.findById(data.deliverId);
+    data.deliver = deliveryFound;
+    this.server.emit('deliverShippedOrder', data);
     return data;
   }
 }
