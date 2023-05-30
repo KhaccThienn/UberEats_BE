@@ -33,7 +33,6 @@ import { UpdateStatusModule } from './update-status/update-status.module';
       username: 'root',
       password: '',
       database: 'sota_project',
-      autoLoadEntities: true,
       entities: [
         User,
         RestaurantEntity,
@@ -42,6 +41,7 @@ import { UpdateStatusModule } from './update-status/update-status.module';
         OrderEntity,
         OrderDeatailsEntity,
       ],
+      autoLoadEntities: true,
       synchronize: true,
     }),
     UserModule,
