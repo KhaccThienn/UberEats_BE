@@ -84,7 +84,7 @@ export class OrderService {
   }
 
   async create(order: CreateOrderDTO) {
-    // console.log('Order Data', order);
+    console.log('Order Data', order);
     const userFound = await this.userRepository.findOne({
       where: [{ id: order.userId }],
     });
@@ -109,6 +109,7 @@ export class OrderService {
     orders.delivered_address = order.delivered_address;
     orders.delivered_phone = order.delivered_phone;
     orders.delivered_user = order.delivered_user;
+    orders.created_at = order.created_at;
     orders.note = order.note;
     orders.status = order.status;
     orders.total_price = order.total_price;

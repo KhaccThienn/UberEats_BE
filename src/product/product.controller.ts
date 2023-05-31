@@ -54,7 +54,6 @@ export class ProductController {
       builder.andWhere(`restaurant.id = ${cateID}`);
     }
 
-    
     if (req.query.userId) {
       const cateID = +req.query.userId;
       builder.andWhere(`user.id = ${cateID}`);
@@ -67,8 +66,6 @@ export class ProductController {
 
       builder.offset((page - 1) * perpage).limit(perpage);
     }
-
-    console.log(await builder.getQuery());
     return await builder.getMany();
   }
 

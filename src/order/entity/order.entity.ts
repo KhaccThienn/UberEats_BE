@@ -35,6 +35,13 @@ export class OrderEntity {
   delivered_phone: number;
 
   @Column({
+    type: 'datetime',
+    nullable: true,
+    // default: Date.now(),
+  })
+  created_at: string;
+
+  @Column({
     type: 'varchar',
     nullable: false,
   })

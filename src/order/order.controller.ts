@@ -48,7 +48,7 @@ export class OrderController {
       const sortQuery = req.query.sort;
       const sortArr = sortQuery.toString().split('-');
       builder.orderBy(
-        `voucher.${sortArr[0]}`,
+        `order.${sortArr[0]}`,
         sortArr[1] == 'ASC' ? 'ASC' : 'DESC',
       );
     }
@@ -82,7 +82,6 @@ export class OrderController {
       builder.offset((page - 1) * perpage).limit(perpage);
     }
 
-    // console.log(await builder.getMany());
     return await builder.getMany();
   }
 

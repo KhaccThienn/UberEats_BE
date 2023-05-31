@@ -39,19 +39,14 @@ export class UpdateStatusGateway
   }
 
   @SubscribeMessage('createOrder')
-  async create(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: CreateOrderDTO,
-  ) {
-    console.log({ client, data });
+  async create(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+    console.log(data);
     this.server.emit('createOrderClient', data);
     return data;
   }
 
   @SubscribeMessage('restaurantAcceptOrder')
   acceptOrder(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-    console.log({ client, data });
-
     data.orderData.status == Status.COOKING
       ? this.server.emit('updateOrderStatusClient', data)
       : this.server.emit('updateOrderStatusDeliver', data);
@@ -64,7 +59,6 @@ export class UpdateStatusGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
-    console.log(data);
     const deliveryFound = await this.userService.findById(
       data.userData.user.subject,
     );
@@ -79,8 +73,6 @@ export class UpdateStatusGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
-    console.log(data);
-
     const deliveryFound = await this.userService.findById(data.deliverId);
     data.deliver = deliveryFound;
     data.orderData.status === Status.PICKED
