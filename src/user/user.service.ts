@@ -7,6 +7,7 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UpdatePasswordDTO } from './dtos/update-password.dto';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
+import { Role } from 'src/model/role.enum';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,17 @@ export class UserService {
     return this.userRepo.find({
       relations: {
         restaurant: true,
+      },
+    });
+  }
+
+  async findByRole(roleId: number): Promise<User[]> {
+    return this.userRepo.find({
+      relations: {
+        restaurant: true,
+      },
+      where: {
+        role: roleId,
       },
     });
   }

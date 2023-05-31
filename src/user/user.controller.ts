@@ -22,7 +22,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { unlinkSync } from 'fs';
 @ApiTags('User API')
 @Controller('user')
-
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get()
@@ -33,6 +32,11 @@ export class UserController {
   @Get(':userID')
   async getUser(@Param('userID') userID: string): Promise<User> {
     return await this.userService.findById(userID);
+  }
+
+  @Get('/role/:roleId')
+  async getRole(@Param('roleId') roleId: number): Promise<User[]> {
+    return await this.userService.findByRole(roleId);
   }
 
   @Put(':userID')

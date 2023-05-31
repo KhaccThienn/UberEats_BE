@@ -16,6 +16,10 @@ export class CreateOrderDTO {
   @Expose()
   delivered_user: string;
 
+  @IsNotEmpty()
+  @Expose()
+  created_at: string;
+
   @Expose()
   note: string;
 
