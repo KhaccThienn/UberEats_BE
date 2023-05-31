@@ -69,15 +69,15 @@ export class AuthService {
     });
     if (!user) {
       throw new HttpException(
-        { status: HttpStatus.FORBIDDEN, error: 'Invalid Account' },
-        HttpStatus.FORBIDDEN,
+        { status: HttpStatus.BAD_REQUEST, error: 'Invalid Account' },
+        HttpStatus.BAD_REQUEST,
       );
     }
     const matchPass = await argon.verify(user.password, password);
     if (!matchPass) {
       throw new HttpException(
-        { status: HttpStatus.FORBIDDEN, error: 'Invalid Account' },
-        HttpStatus.FORBIDDEN,
+        { status: HttpStatus.BAD_REQUEST, error: 'Invalid Account' },
+        HttpStatus.BAD_REQUEST,
       );
     }
     delete user.password;
@@ -91,8 +91,8 @@ export class AuthService {
     const userFound = await this.validateUser(user.email, user.password);
     if (!userFound) {
       throw new HttpException(
-        { status: HttpStatus.FORBIDDEN, error: 'Invalid Credentials' },
-        HttpStatus.FORBIDDEN,
+        { status: HttpStatus.BAD_REQUEST, error: 'Invalid Credentials' },
+        HttpStatus.BAD_REQUEST,
       );
     }
     const tokens = await this.signJwtToken(userFound.id, userFound.role);
