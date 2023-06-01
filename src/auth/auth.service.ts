@@ -42,9 +42,31 @@ export class AuthService {
   }
 
   async registerAccount(user: RegisterDTO): Promise<User> {
-    const exists_user = await this.doesUserExist(user.email);
-    if (exists_user) {
-      throw new ForbiddenException(`User ${user.userName} already exists`);
+    const exists_user_email = await this.doesUserExist(user.email);
+    const exists_user_phone = await this.userRepo.findOne({
+      where: [
+        {
+          phone: user.phone,
+        },
+      ],
+    });
+    if (exists_user_email) {
+      throw new HttpException(
+        {
+          status: HttpStatus.CONFLICT,
+          error: `This email: ${user.email} is already existed`,
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (exists_user_phone) {
+      throw new HttpException(
+        {
+          status: HttpStatus.CONFLICT,
+          error: `This phone: ${user.phone} is already existed`,
+        },
+        HttpStatus.CONFLICT,
+      );
     }
     const hashedPassword = await this.hashedData(user.password);
     user.password = hashedPassword;
@@ -69,15 +91,15 @@ export class AuthService {
     });
     if (!user) {
       throw new HttpException(
-        { status: HttpStatus.BAD_REQUEST, error: 'Invalid Account' },
-        HttpStatus.BAD_REQUEST,
+        { status: HttpStatus.UNAUTHORIZED, error: 'Invalid Account' },
+        HttpStatus.UNAUTHORIZED,
       );
     }
     const matchPass = await argon.verify(user.password, password);
     if (!matchPass) {
       throw new HttpException(
-        { status: HttpStatus.BAD_REQUEST, error: 'Invalid Account' },
-        HttpStatus.BAD_REQUEST,
+        { status: HttpStatus.UNAUTHORIZED, error: 'Invalid Account' },
+        HttpStatus.UNAUTHORIZED,
       );
     }
     delete user.password;
