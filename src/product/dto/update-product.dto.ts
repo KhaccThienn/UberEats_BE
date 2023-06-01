@@ -25,7 +25,6 @@ export class UpdateProductDTO {
     @Expose()
     status: number;
     
-    @IsNotEmpty()
     @Expose()
     description: string;
 

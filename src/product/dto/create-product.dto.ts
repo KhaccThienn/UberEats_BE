@@ -24,8 +24,7 @@ export class CreateProductDTO {
     @IsNotEmpty()
     @Expose()
     status: number;
-    
-    @IsNotEmpty()
+
     @Expose()
     description: string;
 
