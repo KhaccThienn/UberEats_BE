@@ -28,6 +28,14 @@ export class UserController {
   async getAllUsers(): Promise<User[]> {
     return await this.userService.findAll();
   }
+  @Get('/emails')
+  async getAllUserEmails() {
+    return await this.userService.findAllEmailUser();
+  }
+  @Get('/phones')
+  async getAllUserPhones() {
+    return await this.userService.findAllPhoneUser();
+  }
 
   @Get(':userID')
   async getUser(@Param('userID') userID: string): Promise<User> {
