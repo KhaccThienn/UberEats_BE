@@ -38,6 +38,21 @@ export class UpdateStatusGateway
     this.orderStatus = '';
   }
 
+  @SubscribeMessage('canceledOrder')
+  async cancelOrder(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    const userFound = await this.userService.findById(
+      data.userData.user.subject,
+    );
+    console.log(userFound);
+    data.user = userFound;
+    console.log(data);
+    this.server.emit('handleCanceledOrder', data);
+    return data;
+  }
+
   @SubscribeMessage('createOrder')
   async create(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
     console.log(data);

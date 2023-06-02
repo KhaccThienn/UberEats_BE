@@ -26,6 +26,8 @@ export class OrderDeatailsEntity {
   @ManyToOne(() => ProductEntity, (products) => products.order_details)
   product: ProductEntity;
 
-  @ManyToOne(() => OrderEntity, (order) => order.order_details)
+  @ManyToOne(() => OrderEntity, (order) => order.order_details, {
+    onDelete: 'CASCADE',
+  })
   orders: OrderEntity;
 }
