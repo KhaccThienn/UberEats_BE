@@ -61,6 +61,9 @@ export class VoucherService {
     const restaurant = await this.restaurantRepository.findOneBy({
       id: voucher.restaurantId,
     });
+    if (voucher.discount < 0 || voucher.discount > 100) {
+      
+    }
     const newVoucher = this.voucherRepository.create({
       ...voucher,
       restaurant,

@@ -6,4 +6,5 @@ export enum Status {
   PICKED = 3,
   SHIPPING = 4,
   SHIPPED = 5,
+  REJECTED = 6,
 }

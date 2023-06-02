@@ -157,7 +157,21 @@ export class OrderService {
     return await this.orderRepository.update(id, updatedOrder);
   }
 
-  async delete(id: number): Promise<DeleteResult> {
+  async delete(id: number) {
+    const orderFound = await this.orderRepository.findOne({
+      relations: {
+        order_details: true,
+      },
+      where: [
+        {
+          id: id,
+        },
+      ],
+    });
+    console.log(orderFound.order_details);
+    orderFound.order_details.map(async (e, i) => {
+      await this.orderDeatailsRepository.delete(e.id);
+    });
     return await this.orderRepository.delete(id);
   }
 }
