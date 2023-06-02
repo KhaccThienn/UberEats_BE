@@ -30,6 +30,22 @@ export class UserService {
       },
     });
   }
+  async findAllEmailUser() {
+    const users = await this.userRepo.find();
+    const emails = [];
+    users.forEach(element => {
+      emails.push(element.email)
+    });
+    return emails
+  }
+  async findAllPhoneUser()  {
+    const users = await this.userRepo.find();
+    const phones = [];
+    users.forEach(element => {
+      phones.push(element.phone)
+    });
+    return phones
+  }
 
   async findByRole(roleId: number): Promise<User[]> {
     return this.userRepo.find({

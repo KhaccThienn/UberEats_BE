@@ -91,14 +91,14 @@ export class AuthService {
     });
     if (!user) {
       throw new HttpException(
-        { status: HttpStatus.UNAUTHORIZED, error: 'Invalid Account' },
+        { status: HttpStatus.UNAUTHORIZED, error: 'Account does not exist' },
         HttpStatus.UNAUTHORIZED,
       );
     }
     const matchPass = await argon.verify(user.password, password);
     if (!matchPass) {
       throw new HttpException(
-        { status: HttpStatus.UNAUTHORIZED, error: 'Invalid Account' },
+        { status: HttpStatus.UNAUTHORIZED, error: 'Password does not match' },
         HttpStatus.UNAUTHORIZED,
       );
     }
