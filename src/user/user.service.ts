@@ -33,18 +33,18 @@ export class UserService {
   async findAllEmailUser() {
     const users = await this.userRepo.find();
     const emails = [];
-    users.forEach(element => {
-      emails.push(element.email)
+    users.forEach((element) => {
+      emails.push(element.email);
     });
-    return emails
+    return emails;
   }
-  async findAllPhoneUser()  {
+  async findAllPhoneUser() {
     const users = await this.userRepo.find();
     const phones = [];
-    users.forEach(element => {
-      phones.push(element.phone)
+    users.forEach((element) => {
+      phones.push(element.phone);
     });
-    return phones
+    return phones;
   }
 
   async findByRole(roleId: number): Promise<User[]> {
@@ -108,8 +108,11 @@ export class UserService {
 
     if (!matchPass) {
       throw new HttpException(
-        { status: HttpStatus.FORBIDDEN, error: 'Invalid Account' },
-        HttpStatus.FORBIDDEN,
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'Old Password does not match',
+        },
+        HttpStatus.UNAUTHORIZED,
       );
     }
 
