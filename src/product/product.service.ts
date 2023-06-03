@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './entity/product.entity';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Not, Repository, UpdateResult } from 'typeorm';
 import { CreateProductDTO } from './dto/create-product.dto';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
 import { UpdateProductDTO } from './dto/update-product.dto';
@@ -25,6 +25,26 @@ export class ProductService {
     return await this.productRepository.find();
   }
 
+  async getAllProdNames() {
+    const prods = await this.productRepository.find();
+    const products_names = [];
+    prods.forEach((element) => {
+      products_names.push(element.name);
+    });
+    return products_names;
+  }
+
+  async getAllRecordsExceptOne(id: number): Promise<ProductEntity[]> {
+    const prods = await this.productRepository.find({
+      where: { id: Not(id) },
+    });
+    const products_names = [];
+    prods.forEach((element) => {
+      products_names.push(element.name);
+    });
+    return products_names;
+  }
+
   async getByID(id: number): Promise<ProductEntity> {
     return await this.productRepository.findOne({
       relations: {
@@ -38,8 +58,7 @@ export class ProductService {
     const restaurant = await this.restaurantRepository.findOneBy({
       id: product.restaurantId,
     });
-    
-    
+
     const newProduct = this.productRepository.create({
       ...product,
       restaurant,

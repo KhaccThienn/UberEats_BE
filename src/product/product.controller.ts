@@ -69,6 +69,16 @@ export class ProductController {
     return await builder.getMany();
   }
 
+  @Get('/names')
+  async getAllProductsName() {
+    return await this.productService.getAllProdNames();
+  }
+
+  @Get('/prods/:id')
+  async getAllRecordsExceptOne(@Param('id') id: number) {
+    return this.productService.getAllRecordsExceptOne(id);
+  }
+
   @Get(':id-:slugs')
   async getByID(
     @Param('id') id: number,

@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { VoucherEntity } from './entity/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Not, Repository, UpdateResult } from 'typeorm';
 import { CreateVoucherDTO } from './dto/create-voucher.dto';
 import { UpdateVoucherDTO } from './dto/update-voucher.dto';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
@@ -56,13 +56,31 @@ export class VoucherService {
       },
     });
   }
+  async getAllVouchersName() {
+    const vouchers = await this.voucherRepository.find();
+    const vouchers_names = [];
+    vouchers.forEach((element) => {
+      vouchers_names.push(element.name);
+    });
+    return vouchers_names;
+  }
+
+  async getAllRecordsExceptOne(id: number): Promise<VoucherEntity[]> {
+    const vouchers = await this.voucherRepository.find({
+      where: { id: Not(id) },
+    });
+    const vouchers_names = [];
+    vouchers.forEach((element) => {
+      vouchers_names.push(element.name);
+    });
+    return vouchers_names;
+  }
 
   async create(voucher: CreateVoucherDTO): Promise<VoucherEntity> {
     const restaurant = await this.restaurantRepository.findOneBy({
       id: voucher.restaurantId,
     });
     if (voucher.discount < 0 || voucher.discount > 100) {
-      
     }
     const newVoucher = this.voucherRepository.create({
       ...voucher,
