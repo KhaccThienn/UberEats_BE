@@ -37,6 +37,15 @@ export class UserController {
     return await this.userService.findAllPhoneUser();
   }
 
+  @Get('/emails/:id')
+  async getAllUserEmailsExeptedOne(@Param('id') id: number) {
+    return await this.userService.findAllEmailUserExceptedOne(id);
+  }
+  @Get('/phones/:id')
+  async getAllUserPhonesExeptedOne(@Param('id') id: number) {
+    return await this.userService.findAllPhoneUserExceptedOne(id);
+  }
+
   @Get(':userID')
   async getUser(@Param('userID') userID: string): Promise<User> {
     return await this.userService.findById(userID);

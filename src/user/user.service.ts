@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import * as argon from 'argon2';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Not, Repository, UpdateResult } from 'typeorm';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UpdatePasswordDTO } from './dtos/update-password.dto';
 import { RestaurantEntity } from 'src/restaurant/entity/restaurant.entity';
@@ -40,6 +40,26 @@ export class UserService {
   }
   async findAllPhoneUser() {
     const users = await this.userRepo.find();
+    const phones = [];
+    users.forEach((element) => {
+      phones.push(element.phone);
+    });
+    return phones;
+  }
+  async findAllEmailUserExceptedOne(id: number) {
+    const users = await this.userRepo.find({
+      where: { id: Not(id) },
+    });
+    const emails = [];
+    users.forEach((element) => {
+      emails.push(element.email);
+    });
+    return emails;
+  }
+  async findAllPhoneUserExceptedOne(id: number) {
+    const users = await this.userRepo.find({
+      where: { id: Not(id) },
+    });
     const phones = [];
     users.forEach((element) => {
       phones.push(element.phone);

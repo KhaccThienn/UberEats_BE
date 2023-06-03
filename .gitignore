@@ -36,3 +36,9 @@ lerna-debug.log*
 
 # Ignore files related to API keys
 .env
+
+# Ignore uploading image files
+/src/public/uploads/*.jpg
+/src/public/uploads/*.jpeg
+/src/public/uploads/*.png
+/src/public/uploads/*.svg
