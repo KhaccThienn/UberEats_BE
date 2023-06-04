@@ -24,6 +24,7 @@ import { AccessTokenGuard } from 'src/auth/guards';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ApiTags } from '@nestjs/swagger';
+import { unlinkSync } from 'fs';
 @ApiTags('Restaurant API')
 @Controller('restaurant')
 export class RestaurantController {
@@ -102,6 +103,41 @@ export class RestaurantController {
     return await this.restaurantService.getByID(id);
   }
 
+  @Get('phones')
+  async getAllRestaurantsPhone() {
+    return await this.restaurantService.getAllRestaurantPhone();
+  }
+
+  @Get('emails')
+  async getAllRestaurantEmails() {
+    return await this.restaurantService.getAllRestaurantEmail();
+  }
+
+  @Get('address')
+  async getAllRestaurantAddress() {
+    return await this.restaurantService.getAllRestaurantAddress();
+  }
+
+  @Get('/names/:id')
+  async getAllRestaurantNameExceptOne(@Param('id') id: number) {
+    return this.restaurantService.getAllRestaurantNameExceptOne(id);
+  }
+
+  @Get('/phones/:id')
+  async getAllRestaurantPhoneExceptOne(@Param('id') id: number) {
+    return this.restaurantService.getAllRestaurantPhoneExceptOne(id);
+  }
+
+  @Get('/emails/:id')
+  async getAllRestaurantEmailsExceptOne(@Param('id') id: number) {
+    return this.restaurantService.getAllRestaurantEmailsExceptOne(id);
+  }
+
+  @Get('/address/:id')
+  async getAllRestaurantAddressExceptOne(@Param('id') id: number) {
+    return this.restaurantService.getAllRestaurantAddressExceptOne(id);
+  }
+
   @Post(':userID')
   @UseInterceptors(
     FileInterceptor('avatar', {
@@ -155,6 +191,13 @@ export class RestaurantController {
     let fileName = currentData.avatar;
     if (image) {
       fileName = `http://${req.get('host')}/uploads/${image.filename}`;
+      if (currentData.avatar != '') {
+        const filePath = currentData.avatar.replace(
+          `http://${req.get('host')}/uploads/`,
+          '',
+        );
+        unlinkSync('./src/public/uploads/' + filePath);
+      }
     }
     data.avatar = fileName;
     return await this.restaurantService.update(user_id, id, data);
