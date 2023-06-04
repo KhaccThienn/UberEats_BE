@@ -71,12 +71,18 @@ export class VoucherController {
   async getByID(@Param('id') id: number): Promise<VoucherEntity> {
     return await this.voucherService.getByID(id);
   }
-
-  @Get('/vouchers')
-  async getAllVouchersName() {
-    return await this.voucherService.getAllVouchersName();
+  @Get(':voucherName')
+  async getByVoucherName(
+    @Param('voucherName') voucherName: string,
+  ): Promise<VoucherEntity> {
+    return await this.voucherService.getVoucherByName(voucherName);
   }
-  
+
+  @Get('vouchers')
+  async getAllVoucherNamee() {
+    return this.voucherService.getAllVouchersName();
+  }
+
   @Get('/vouchers/:id')
   async getAllRecordsExceptOne(@Param('id') id: number) {
     return this.voucherService.getAllRecordsExceptOne(id);

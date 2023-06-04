@@ -56,8 +56,25 @@ export class VoucherService {
       },
     });
   }
+
+  async getVoucherByName(voucherName: string): Promise<VoucherEntity> {
+    return await this.voucherRepository.findOne({
+      relations: {
+        orders: true,
+        restaurant: true,
+      },
+      where: {
+        name: voucherName,
+      },
+    });
+  }
+
   async getAllVouchersName() {
-    const vouchers = await this.voucherRepository.find();
+    const vouchers = await this.voucherRepository.find({
+      select: ['name'],
+    });
+    console.log(vouchers);
+
     const vouchers_names = [];
     vouchers.forEach((element) => {
       vouchers_names.push(element.name);
