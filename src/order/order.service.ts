@@ -138,6 +138,8 @@ export class OrderService {
   }
 
   async updateStatus(id: number, order: UpdateOrderDTO) {
+    console.log(order);
+
     return await this.orderRepository.update(id, order);
   }
   async updateDeliver(id: number, deliverId: number, order: UpdateOrderDTO) {

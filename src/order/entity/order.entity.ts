@@ -37,16 +37,20 @@ export class OrderEntity {
   @Column({
     type: 'datetime',
     nullable: true,
-    // default: Date.now(),
   })
   created_at: string;
 
   @Column({
     type: 'datetime',
     nullable: true,
-    // default: Date.now(),
   })
   estimated_time: string;
+
+  @Column({
+    type: 'json',
+    nullable: true,
+  })
+  delivered_from: string;
 
   @Column({
     type: 'varchar',

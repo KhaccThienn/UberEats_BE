@@ -27,4 +27,7 @@ export class UpdateOrderDTO {
 
   @Expose()
   estimated_time?: string;
+
+  @Expose()
+  delivered_from?: string;
 }

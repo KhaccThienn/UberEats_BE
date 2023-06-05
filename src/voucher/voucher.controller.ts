@@ -96,7 +96,6 @@ export class VoucherController {
   @Get('/vouchers/:id')
   async getAllRecordsExceptOne(@Param('id') id: number) {
     return this.voucherService.getAllRecordsExceptOne(id);
-  }
 
   @Get('/restaurant/:resId')
   async getByResId(@Param('resId') resId: number) {
