@@ -50,11 +50,20 @@ export class AuthService {
         },
       ],
     });
+    if (exists_user_email && exists_user_phone) {
+      throw new HttpException(
+        {
+          status: HttpStatus.CONFLICT,
+          error: 'Both email and phone are already exist',
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
     if (exists_user_email) {
       throw new HttpException(
         {
           status: HttpStatus.CONFLICT,
-          error: `This email: ${user.email} is already existed`,
+          error: 'This email address is already exists',
         },
         HttpStatus.CONFLICT,
       );
@@ -63,7 +72,7 @@ export class AuthService {
       throw new HttpException(
         {
           status: HttpStatus.CONFLICT,
-          error: `This phone: ${user.phone} is already existed`,
+          error: 'This phone number is already exists',
         },
         HttpStatus.CONFLICT,
       );

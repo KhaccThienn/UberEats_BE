@@ -88,66 +88,6 @@ export class VoucherService {
     });
   }
 
-  async getAllVouchersName() {
-    const vouchers = await this.voucherRepository.find({
-      select: ['name'],
-    });
-    console.log(vouchers);
-
-    const vouchers_names = [];
-    vouchers.forEach((element) => {
-      vouchers_names.push(element.name);
-    });
-    return vouchers_names;
-  }
-
-  async getAllRecordsExceptOne(id: number): Promise<VoucherEntity[]> {
-    const vouchers = await this.voucherRepository.find({
-      where: { id: Not(id) },
-    });
-    const vouchers_names = [];
-    vouchers.forEach((element) => {
-      vouchers_names.push(element.name);
-    });
-    return vouchers_names;
-  }
-
-  async getVoucherByName(voucherName: string): Promise<VoucherEntity> {
-    return await this.voucherRepository.findOne({
-      relations: {
-        orders: true,
-        restaurant: true,
-      },
-      where: {
-        name: voucherName,
-      },
-    });
-  }
-
-  async getAllVouchersName() {
-    const vouchers = await this.voucherRepository.find({
-      select: ['name'],
-    });
-    console.log(vouchers);
-
-    const vouchers_names = [];
-    vouchers.forEach((element) => {
-      vouchers_names.push(element.name);
-    });
-    return vouchers_names;
-  }
-
-  async getAllRecordsExceptOne(id: number): Promise<VoucherEntity[]> {
-    const vouchers = await this.voucherRepository.find({
-      where: { id: Not(id) },
-    });
-    const vouchers_names = [];
-    vouchers.forEach((element) => {
-      vouchers_names.push(element.name);
-    });
-    return vouchers_names;
-  }
-
   async create(voucher: CreateVoucherDTO): Promise<VoucherEntity> {
     const restaurant = await this.restaurantRepository.findOneBy({
       id: voucher.restaurantId,
