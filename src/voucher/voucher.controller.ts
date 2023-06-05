@@ -88,6 +88,15 @@ export class VoucherController {
     return this.voucherService.getAllRecordsExceptOne(id);
   }
 
+  @Get('/vouchers')
+  async getAllVouchersName() {
+    return await this.voucherService.getAllVouchersName();
+  }
+  
+  @Get('/vouchers/:id')
+  async getAllRecordsExceptOne(@Param('id') id: number) {
+    return this.voucherService.getAllRecordsExceptOne(id);
+
   @Get('/restaurant/:resId')
   async getByResId(@Param('resId') resId: number) {
     return await this.voucherService.getByRestaurantID(resId);
