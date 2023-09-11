@@ -25,7 +25,6 @@ export class UpdateStatusGateway
   @WebSocketServer()
   server: Server;
   constructor(
-    private readonly updateStatusService: UpdateStatusService,
     private readonly userService: UserService,
   ) {}
   private orderStatus = 'Pending';

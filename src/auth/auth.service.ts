@@ -100,7 +100,7 @@ export class AuthService {
     });
     if (!user) {
       throw new HttpException(
-        { status: HttpStatus.UNAUTHORIZED, error: 'Account does not exist' },
+        { status: HttpStatus.NOT_FOUND, error: 'Account does not exist' },
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -170,6 +170,7 @@ export class AuthService {
 
     return tokens;
   }
+  
   async signJwtToken(
     id: number,
     role: number,
@@ -185,7 +186,7 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: process.env.SECRET_TOKEN_KEY,
-        expiresIn: '10d',
+        expiresIn: '1d',
       }),
       this.jwtService.signAsync(payload, {
         secret: process.env.SECRET_REFRESH_TOKEN_KEY,

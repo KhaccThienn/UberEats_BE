@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -20,10 +21,12 @@ import { Req } from '@nestjs/common';
 import { Request } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { unlinkSync } from 'fs';
+import { AccessTokenGuard } from 'src/auth/guards';
 @ApiTags('User API')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+  @UseGuards(AccessTokenGuard)
   @Get()
   async getAllUsers(): Promise<User[]> {
     return await this.userService.findAll();

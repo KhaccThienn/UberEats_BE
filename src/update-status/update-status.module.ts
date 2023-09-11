@@ -11,16 +11,5 @@ import { UserModule } from 'src/user/user.module';
 import { VoucherModule } from 'src/voucher/voucher.module';
 import { UserService } from 'src/user/user.service';
 
-@Module({
-  imports: [
-    TypeOrmModule.forFeature([OrderEntity]),
-    forwardRef(() => OrderDetailsModule),
-    forwardRef(() => UserModule),
-    forwardRef(() => VoucherModule),
-    forwardRef(() => ProductModule),
-    forwardRef(() => RestaurantModule),
-  ],
-  providers: [UpdateStatusGateway, UpdateStatusService, UserService],
-  exports: [TypeOrmModule],
-})
+
 export class UpdateStatusModule {}

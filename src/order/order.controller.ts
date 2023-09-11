@@ -47,6 +47,8 @@ export class OrderController {
     if (req.query.sort) {
       const sortQuery = req.query.sort;
       const sortArr = sortQuery.toString().split('-');
+      console.log(sortQuery);
+
       builder.orderBy(
         `order.${sortArr[0]}`,
         sortArr[1] == 'ASC' ? 'ASC' : 'DESC',
@@ -56,6 +58,12 @@ export class OrderController {
     if (req.query.orderUser) {
       const cateID = +req.query.orderUser;
       builder.andWhere(`orderUser.id = ${cateID}`);
+      console.log(builder.getQuery());
+    }
+    if (req.query.userId) {
+      const cateID = +req.query.userId;
+      builder.andWhere(`user.id = ${cateID}`);
+      console.log(builder.getQuery());
     }
 
     if (req.query.orderId) {
@@ -75,11 +83,12 @@ export class OrderController {
     }
 
     // paginate
-    if (req.query.page || req.query.limit) {
-      const page: number = parseInt(req.query.page as any) || 1;
-      const perpage: number = parseInt(req.query.limit as any) || 2;
+    if (req.query._page || req.query._limit) {
+      const page: number = parseInt(req.query._page as any) || 1;
+      const perpage: number = parseInt(req.query._limit as any) || 2;
 
       builder.offset((page - 1) * perpage).limit(perpage);
+      console.log(builder.getQuery());
     }
 
     return await builder.getMany();

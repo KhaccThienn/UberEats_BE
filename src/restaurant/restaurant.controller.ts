@@ -46,7 +46,7 @@ export class RestaurantController {
       const sortQuery = req.query.sort;
       const sortArr = sortQuery.toString().split('-');
       builder.orderBy(
-        `product.${sortArr[0]}`,
+        `restaurant.${sortArr[0]}`,
         sortArr[1] == 'ASC' ? 'ASC' : 'DESC',
       );
     }
